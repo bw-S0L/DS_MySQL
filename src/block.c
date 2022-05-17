@@ -23,6 +23,7 @@ ItemPtr get_item(Block *block, short idx) {
 }
 
 short new_item(Block *block, ItemPtr item, short item_size) {
+    
 }
 
 void delete_item(Block *block, short idx) {
