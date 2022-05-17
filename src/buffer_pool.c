@@ -4,16 +4,87 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void init_buffer_pool(const char *filename, BufferPool *pool) {
+void init_buffer_pool(const char *filename, BufferPool *pool){
+
+    pool = (BufferPool *)malloc(sizeof(BufferPool));
+
+    open_file(&(pool->file), filename);
+
+    for (int i = 0; i < CACHE_PAGE; i++)
+    {
+        for (int j = 0; j < PAGE_SIZE; j++)
+            pool->pages[i].data[j] = 0;
+
+        pool->addrs[i] = (off_t)0;
+
+        pool->cnt[i] = (size_t)10;
+
+        pool->ref[i] = (size_t)0;
+
+
+    }
 }
 
-void close_buffer_pool(BufferPool *pool) {
+void close_buffer_pool(BufferPool *pool){
+    for (int i = 0; i < CACHE_PAGE; i++){
+        write_page(&(pool->pages[i]),&(pool->file),&(pool->addrs[i]));
+    }
+
+    close_file(&(pool->file));
+
+    free(pool);
+    pool=NULL;
 }
 
-Page *get_page(BufferPool *pool, off_t addr) {
+Page *get_page(BufferPool *pool, off_t addr){
+
+     int k=-1;
+
+      for(int i=0;i<CACHE_PAGE;i++){
+          if(pool->addrs[i]==addr){
+              k=i;
+              pool->ref[i]=1;
+              pool->cnt[i]=1;
+          }
+          else{
+               pool->cnt[i]++;
+          }
+      }
+
+    if(k>=0&&k<CACHE_PAGE)
+    return &(pool->pages[k]);
+
+
+     size_t tmp=0;
+     
+      for(int i=0;i<CACHE_PAGE;i++){
+        if(pool->ref[i]==0){
+            if(pool->cnt[i]>tmp){
+                tmp=pool->cnt[i];
+                k=i;
+            }
+        }
+      }
+
+      pool->cnt[k]=1;
+      pool->ref[k]=1;
+      write_page(&(pool->pages[k]),&(pool->file),&(pool->addrs[k]));
+      read_page(&(pool->pages[k]),&(pool->file),addr);
+      return  &(pool->pages[k]);
+
 }
 
-void release(BufferPool *pool, off_t addr) {
+void release(BufferPool *pool, off_t addr){
+    int i=0;
+     for(;i<CACHE_PAGE;i++)
+         if(pool->addrs[i]==addr)
+         break;
+    if(i<CACHE_PAGE){
+       pool->ref[i]=0;
+    }
+    else{
+        ;
+    }
 }
 
 /* void print_buffer_pool(BufferPool *pool) {

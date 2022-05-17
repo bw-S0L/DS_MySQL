@@ -5,13 +5,15 @@
 
 #define CACHE_PAGE 8
 
-typedef struct {
+typedef struct
+{
   /* you can modify anything in this struct */
   FileInfo file;
   Page pages[CACHE_PAGE];
   off_t addrs[CACHE_PAGE];
   size_t cnt[CACHE_PAGE];
   size_t ref[CACHE_PAGE];
+
 } BufferPool;
 
 /* BEGIN: --------------------------------- DO NOT MODIFY! --------------------------------- */
@@ -30,4 +32,4 @@ void release(BufferPool *pool, off_t addr);
 
 /* void validate_buffer_pool(BufferPool *pool); */
 
-#endif  /* _BUFFER_POOL_H */
+#endif /* _BUFFER_POOL_H */

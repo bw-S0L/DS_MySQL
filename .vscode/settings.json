@@ -1,0 +1,11 @@
+{
+    "files.associations": {
+        "atomic": "c",
+        "memory": "c",
+        "system_error": "c",
+        "xlocale": "c",
+        "xmemory": "c",
+        "xstring": "c",
+        "xutility": "c"
+    }
+}
