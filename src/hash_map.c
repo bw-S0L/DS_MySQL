@@ -10,7 +10,7 @@ void hash_table_init(const char *filename, BufferPool *pool, off_t n_directory_b
     HashMapControlBlock*ctr=(HashMapControlBlock*)p->data;
     ctr->free_block_head=-1;
     ctr->n_directory_blocks=n_directory_blocks;
-    ctr->max_size=n_directory_blocks*HASH_MAP_DIR_BLOCK_SIZE;
+    ctr->max_size=n_directory_blocks*HASH_MAP_DIR_BLOCK_SIZE-1;
     release(pool,(off_t)0);
 
 
@@ -340,10 +340,10 @@ void hash_table_pop(BufferPool *pool, short size, off_t addr) {
     printf("----------HASH TABLE----------\n");
     for (i = 0; i < ctrl->max_size; ++i) {
         dir_block = (HashMapDirectoryBlock*)get_page(pool, (i / HASH_MAP_DIR_BLOCK_SIZE + 1) * PAGE_SIZE);
-        if (dir_block->directory[i % HASH_MAP_DIR_BLOCK_SIZE] != 0) {
+        if (dir_block->directory[i % HASH_MAP_DIR_BLOCK_SIZE] != -1) {
             printf("%d:", i);
             block_addr = dir_block->directory[i % HASH_MAP_DIR_BLOCK_SIZE];
-            while (block_addr != 0) {
+            while (block_addr != -1) {
                 block = (HashMapBlock*)get_page(pool, block_addr);
                 printf("  [" FORMAT_OFF_T "]", block_addr);
                 printf("{");
