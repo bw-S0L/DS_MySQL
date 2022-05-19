@@ -16,6 +16,7 @@ typedef struct
 
 } BufferPool;
 
+int num_valid_pool(BufferPool *pool);
 /* BEGIN: --------------------------------- DO NOT MODIFY! --------------------------------- */
 
 void init_buffer_pool(const char *filename, BufferPool *pool);

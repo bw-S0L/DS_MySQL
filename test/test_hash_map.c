@@ -17,14 +17,14 @@ int empty(short size);
 short get_size(my_off_t id);
 size_t get_total();
 my_off_t get_item(int idx);
-
+int valid_pool=8;
 int test(int num_rep, int num_pos,
     int num_ins1, int num_pop_lb1,
     int num_ins2, int num_pop, int num_pop_lb2, int out)
 {
     BufferPool pool;
     hash_table_init("zztest-hashmap", &pool, 8);
-    print_hash_table(&pool);
+  //  print_hash_table(&pool);
     int max_val = 8 * HASH_MAP_DIR_BLOCK_SIZE;
     int counter = 1;
     int rep;
@@ -36,7 +36,7 @@ int test(int num_rep, int num_pos,
     init(max_val);
 
     printf("max_val = %d\n", max_val);
-
+    
     for (rep = 0; rep < num_rep && !flag; ++rep) {
         /* step 1: select a number of positions to insert a number of addrs */
         for (i = 0; i < num_pos; ++i) {
@@ -49,15 +49,20 @@ int test(int num_rep, int num_pos,
             if (out) printf("insert: %d %d\n", pos[p], counter);
             ++counter;
         }
-         print_hash_table(&pool);
-          printf("step1 is ok\n");
-         system("pause");
+       //  print_hash_table(&pool);
+         // printf("step1 is ok\n");
+          if(num_valid_pool(&pool)<valid_pool){
+              printf("num_valid_pool 1_2=%d  cmp=%d\n",num_valid_pool(&pool),valid_pool);
+              valid_pool=num_valid_pool(&pool);
+          }
+              
         /* step 2: pop lower bound */
         for (i = 0; i < num_pop_lb1; ++i) {
             p = rand() % max_val;
             r = (int)hash_table_pop_lower_bound(&pool, (short)p);
-            printf("r=%d i=%d  p=%d\n",r,i,p);
-             print_hash_table(&pool);
+          //  print_hash_table(&pool);
+           // printf("r=%d i=%d  p=%d\n",r,i,p);
+            
             if (out) {
                 if (r != -1) {
                     printf("pop lower bound: %d %d (size: %d)\n", p, r, get_size(r));
@@ -77,38 +82,46 @@ int test(int num_rep, int num_pos,
             if (a == max_val) {  /* a == -1 */
                 if (r != -1) {
                     printf("* expected: -1\n");
-                     printf("step2 is wrong 2\n");
-            system("pause");
+                  //   printf("step2 is wrong 2\n");
+                 
                     flag = 1;
                     break;  /* for */
                 }  /* else r == -1, OK */
             } else {  /* a != -1 */
                 if (r == -1) {
                     printf("* expected size: %d %d %d\n", a,r,i);
-                     printf("step2 is wrong 3\n");
-            system("pause");
+                 //    printf("step2 is wrong 3\n");
+                 
                     flag = 1;
                     break;  /* for */
                 }
                 /* r != -1 */
                 if (!contain((short)a, r)) {
                     printf("* expected size: %d %d %d\n", a,r,i);
-                     printf("step2 is wrong 4\n");
-            system("pause");
+                 //    printf("step2 is wrong 4\n");
+                 
                     flag = 1;
                     break;  /* for */
                 }
                 /* contain((short)a, r), OK */
+               
                 erase(a, r);
+
+                
             }
         }
+        
         if (flag) {
-            printf("step2 is wrong 5\n");
-            system("pause");
+          //  printf("step2 is wrong 5\n");
+                 
             break;  /* for */
         }
-         printf("step2 is ok\n");
-         system("pause");
+        // printf("step2 is ok\n");
+          //  printf("num_valid_pool=%d\n",num_valid_pool(&pool));
+       if(num_valid_pool(&pool)<valid_pool){
+              printf("num_valid_pool 2_3=%d  cmp=%d\n",num_valid_pool(&pool),valid_pool);
+              valid_pool=num_valid_pool(&pool);
+          }
         /* step 3: select a number of positions to insert a number of addrs */
         for (i = 0; i < num_pos; ++i) {
             pos[i] = rand() % max_val;
@@ -120,9 +133,14 @@ int test(int num_rep, int num_pos,
             if (out) printf("insert: %d %d\n", pos[p], counter);
             ++counter;
         }
-          printf("step3 is ok\n");
-         system("pause");
+       //   printf("step3 is ok\n");
+          //  printf("num_valid_pool=%d\n",num_valid_pool(&pool));
+        if(num_valid_pool(&pool)<valid_pool){
+              printf("num_valid_pool 3_4=%d  cmp=%d\n",num_valid_pool(&pool),valid_pool);
+              valid_pool=num_valid_pool(&pool);
+          }
         /* step 4: pop */
+        //  print_hash_table(&pool);
         for (i = 0; i < num_pop; ++i) {
             if (get_total() == 0) {
                 break;
@@ -130,16 +148,22 @@ int test(int num_rep, int num_pos,
             r = (int)get_item(rand() % (int)get_total());
             if (out) printf("pop: %d (size: %d)\n", r, get_size(r));
             hash_table_pop(&pool, get_size(r), r);
+           
+            //  printf("num_valid_pool=%d\n",num_valid_pool(&pool));
             erase(get_size(r), r);
         }
-          printf("step4 is ok\n");
-         system("pause");
+        //  printf("step4 is ok\n");
+          
+        if(num_valid_pool(&pool)<valid_pool){
+              printf("num_valid_pool 4_5=%d  cmp=%d\n",num_valid_pool(&pool),valid_pool);
+              valid_pool=num_valid_pool(&pool);
+          }
         /* step 5: pop lower bound */
         for (i = 0; i < num_pop_lb2; ++i) {
             p = rand() % max_val;
             r = (int)hash_table_pop_lower_bound(&pool, (short)p);
-             printf("r=%d i=%d  p=%d\n",r,i,p);
-             print_hash_table(&pool);
+            // printf("r=%d i=%d  p=%d\n",r,i,p);
+           //  print_hash_table(&pool);
             if (out) {
                 if (r != -1) {
                     printf("pop lower bound: %d %d (size: %d)\n", p, r, get_size(r));
@@ -158,16 +182,16 @@ int test(int num_rep, int num_pos,
             if (a == max_val) {  /* a == -1 */
                 if (r != -1) {
                     printf("* expected: -1\n");
-                       printf("step2 is wrong 2\n");
-            system("pause");
+                     //  printf("step2 is wrong 2\n");
+                 
                     flag = 1;
                     break;  /* for */
                 }  /* else r == -1, OK */
             } else {  /* a != -1 */
                 if (r == -1) {
                     printf("* expected size: %d\n", a);
-                     printf("step2 is wrong 3\n");
-            system("pause");
+             //        printf("step2 is wrong 3\n");
+                 
                     flag = 1;
                     break;  /* for */
                 }
@@ -175,24 +199,32 @@ int test(int num_rep, int num_pos,
                 if (!contain((short)a, r)) {
                     printf("* expected size: %d\n", a);
                      printf("step2 is wrong 4\n");
-            system("pause");
+                 
                     flag = 1;
                     break;  /* for */
                 }
                 /* contain((short)a, r), OK */
+               
                 erase(a, r);
+              
             }
         }
-          printf("step5 is ok\n");
-         system("pause");
+        if(num_valid_pool(&pool)<valid_pool){
+              printf("5 num_valid_pool =%d  cmp=%d\n",num_valid_pool(&pool),valid_pool);
+              valid_pool=num_valid_pool(&pool);
+          }
+        //  printf("step5 is ok\n");
+          //  printf("num_valid_pool=%d\n",num_valid_pool(&pool));
+              
     }
-
+  printf("step5.5 is ok\n");
     free(pos);
       printf("step6 is ok\n");
-         system("pause");
+              
     /* validation & cleanup */
     /* validate_buffer_pool(&pool); */
     hash_table_close(&pool);
+       printf("step7 is ok\n");
     if (remove("zztest-hashmap") != 0) {
         printf("error deleting: zztest-hashmap\n");
     }
@@ -215,26 +247,26 @@ int main()
     //     return 1;
     // }
       printf("0\n");
-    system("pause");
-    if (test(10000, 10, 40, 40, 40, 20, 20, 1)) {
+         
+    if (test(10000, 10, 40, 40, 40, 20, 20, 0)) {
         return 1;
     }
      printf("1\n");
-    system("pause");
+         
     if (test(1000, 256, 512, 512, 512, 256, 256, 0)) {
         return 1;
     }
      printf("2\n");
-    system("pause");
+         
     if (test(100000, 1, 1, 1, 1, 1, 1, 0)) {
         return 1;
     }
      printf("3\n");
-    system("pause");
+         
     if (test(100000, 2, 2, 1, 2, 1, 1, 0)) {
         return 1;
     }
      printf("4\n");
-    system("pause");
+         
     return 0;
 }

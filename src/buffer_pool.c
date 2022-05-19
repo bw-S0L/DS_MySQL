@@ -33,7 +33,7 @@ void close_buffer_pool(BufferPool *pool){
 
     close_file(&(pool->file));
 
-    free(pool);
+  
     pool=NULL;
 }
 
@@ -113,6 +113,7 @@ Page *get_page(BufferPool *pool, off_t addr){
       //more than CACHE_PAGE(8) use pages
     else{
           printf("All buffer pool is used and not compare\n");
+          // system("pause");
            return  NULL;
       }
      
@@ -127,10 +128,19 @@ void release(BufferPool *pool, off_t addr){
        pool->ref[i]=0;
     }
     else{
+       
         printf("addr is not in buffer_pool\n");
     }
 }
 
+int num_valid_pool(BufferPool *pool){
+   int sum=0;
+    for(int i=0;i<CACHE_PAGE;i++){
+        if(pool->ref[i]==0)
+        sum++;
+    }
+    return sum;
+}
 /* void print_buffer_pool(BufferPool *pool) {
 } */
 

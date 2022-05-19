@@ -1,3 +1,2 @@
-test_hash_map 0 0
+test_hash_map 2 99.6211
 ---
-test_hash_map

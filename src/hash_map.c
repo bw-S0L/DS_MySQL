@@ -177,6 +177,10 @@ off_t hash_table_pop_lower_bound(BufferPool *pool, short size) {
         }
     }
     else{*/
+    if(tmp_size==PAGE_SIZE){
+        return -1;
+    }
+    else{
         pre=(off_t)(dir_id*PAGE_SIZE);
         now=dir->directory[r_id];
         mp=(HashMapBlock*)get_page(pool,now);
@@ -187,12 +191,12 @@ off_t hash_table_pop_lower_bound(BufferPool *pool, short size) {
     release(pool,now);
     hash_table_pop(pool,tmp_size,ans);
     return ans;
-
+    }
 
     }
     else{
         printf("hash_table_pop_lower_bound: size is out of range\n");
-        return PAGE_MASK;
+        return -1;
     }
     
 }
@@ -203,7 +207,7 @@ void hash_table_pop(BufferPool *pool, short size, off_t addr) {
     if(size>=0&&size<PAGE_SIZE){
          off_t pre ,now;
          HashMapBlock*mp,*fmp;
-         HashMapControlBlock*ctr;
+       //  HashMapControlBlock*ctr;
          HashMapDirectoryBlock*dir;
       /*  if(size==PAGE_MASK){
             pre=0;
@@ -216,11 +220,11 @@ void hash_table_pop(BufferPool *pool, short size, off_t addr) {
            dir=(HashMapDirectoryBlock*)get_page(pool,pre);
            now=dir->directory[size%HASH_MAP_DIR_BLOCK_SIZE];
            mp=(HashMapBlock*)get_page(pool,now);
-           printf("%d \n",size);
+         
       //  }
 
          for(int i=0;i<mp->n_items;i++){
-             printf("%lld  addr= %lld\n",mp->table[i],addr);
+          //   printf("%lld  addr= %lld\n",mp->table[i],addr);
                if(mp->table[i]==addr){
                    mp->table[i]=-1;
                    mp->n_items--;
@@ -244,10 +248,14 @@ void hash_table_pop(BufferPool *pool, short size, off_t addr) {
                                    pool->pages[j].data[l]=0;
                                 pool->addrs[j]=-1;
                                 pool->cnt[j]=1;
-                                pool->ref[i]=0;
+                                pool->ref[j]=0;
+                                break;
                             }
                         }
                         pool->file.length-=PAGE_SIZE;
+                    }
+                    else{
+                         release(pool,now);;
                     }
                     // else{
                     //   HashMapBlock*last_block=get_page(pool,pool->file.length-PAGE_SIZE);
@@ -301,10 +309,14 @@ void hash_table_pop(BufferPool *pool, short size, off_t addr) {
                                    pool->pages[j].data[l]=0;
                                 pool->addrs[j]=-1;
                                 pool->cnt[j]=1;
-                                pool->ref[i]=0;
+                                pool->ref[j]=0;
+                                break;
                             }
                         }
                         pool->file.length-=PAGE_SIZE;
+                    }
+                     else{
+                         release(pool,now);;
                     }
                     // else{
                     //   HashMapBlock*last_block=get_page(pool,pool->file.length-PAGE_SIZE);
