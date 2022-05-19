@@ -49,6 +49,8 @@ int test(int num_rep, int num_pos,
             if (out) printf("insert: %d %d\n", pos[p], counter);
             ++counter;
         }
+          printf("step1 is ok\n");
+         system("pause");
         /* step 2: pop lower bound */
         for (i = 0; i < num_pop_lb1; ++i) {
             p = rand() % max_val;
@@ -93,6 +95,8 @@ int test(int num_rep, int num_pos,
         if (flag) {
             break;  /* for */
         }
+          printf("step2 is ok\n");
+         system("pause");
         /* step 3: select a number of positions to insert a number of addrs */
         for (i = 0; i < num_pos; ++i) {
             pos[i] = rand() % max_val;
@@ -104,6 +108,8 @@ int test(int num_rep, int num_pos,
             if (out) printf("insert: %d %d\n", pos[p], counter);
             ++counter;
         }
+          printf("step3 is ok\n");
+         system("pause");
         /* step 4: pop */
         for (i = 0; i < num_pop; ++i) {
             if (get_total() == 0) {
@@ -114,6 +120,8 @@ int test(int num_rep, int num_pos,
             hash_table_pop(&pool, get_size(r), r);
             erase(get_size(r), r);
         }
+          printf("step4 is ok\n");
+         system("pause");
         /* step 5: pop lower bound */
         for (i = 0; i < num_pop_lb2; ++i) {
             p = rand() % max_val;
@@ -155,10 +163,13 @@ int test(int num_rep, int num_pos,
                 erase(a, r);
             }
         }
+          printf("step5 is ok\n");
+         system("pause");
     }
 
     free(pos);
-
+      printf("step6 is ok\n");
+         system("pause");
     /* validation & cleanup */
     /* validate_buffer_pool(&pool); */
     hash_table_close(&pool);
@@ -169,6 +180,7 @@ int test(int num_rep, int num_pos,
 }
 int main()
 {
+   
     if (sizeof(HashMapDirectoryBlock) > PAGE_SIZE) {
         printf("HashMapDirectoryBlock size is too large: " FORMAT_SIZE_T "\n", sizeof(HashMapDirectoryBlock));
         return 1;
@@ -181,17 +193,27 @@ int main()
     // if (test(1, 2, 4, 4, 4, 2, 4, 1)) {
     //     return 1;
     // }
+      printf("0\n");
+    system("pause");
     if (test(10000, 10, 40, 40, 40, 20, 20, 0)) {
         return 1;
     }
+     printf("1\n");
+    system("pause");
     if (test(1000, 256, 512, 512, 512, 256, 256, 0)) {
         return 1;
     }
+     printf("2\n");
+    system("pause");
     if (test(100000, 1, 1, 1, 1, 1, 1, 0)) {
         return 1;
     }
+     printf("3\n");
+    system("pause");
     if (test(100000, 2, 2, 1, 2, 1, 1, 0)) {
         return 1;
     }
+     printf("4\n");
+    system("pause");
     return 0;
 }
