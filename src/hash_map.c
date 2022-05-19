@@ -167,7 +167,7 @@ off_t hash_table_pop_lower_bound(BufferPool *pool, short size) {
         if(ctr->free_block_head==-1){
              release(pool,(off_t)0);
             printf("hash_table_pop_lower_bound:no valid block\n");
-            return -1;
+            return PAGE_MASK;
         }
         else{
             pre=0;
@@ -192,14 +192,14 @@ off_t hash_table_pop_lower_bound(BufferPool *pool, short size) {
     }
     else{
         printf("hash_table_pop_lower_bound: size is out of range\n");
-        return -1;
+        return PAGE_MASK;
     }
     
 }
 
 
 void hash_table_pop(BufferPool *pool, short size, off_t addr) {
-    printf("hash_table_pop\n");
+   
     if(size>=0&&size<PAGE_SIZE){
          off_t pre ,now;
          HashMapBlock*mp,*fmp;
@@ -224,7 +224,7 @@ void hash_table_pop(BufferPool *pool, short size, off_t addr) {
                if(mp->table[i]==addr){
                    mp->table[i]=-1;
                    mp->n_items--;
-                   printf("mp->n_items=%lld\n",mp->n_items);
+                
                    
                    if(mp->n_items==0){
                     if(size==PAGE_MASK)

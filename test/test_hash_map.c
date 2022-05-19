@@ -68,6 +68,7 @@ int test(int num_rep, int num_pos,
             a = p;
             while (a < max_val) {
                 if (!empty((short)a)) {
+                    
                     break;
                 }
                 ++a;
@@ -76,18 +77,24 @@ int test(int num_rep, int num_pos,
             if (a == max_val) {  /* a == -1 */
                 if (r != -1) {
                     printf("* expected: -1\n");
+                     printf("step2 is wrong 2\n");
+            system("pause");
                     flag = 1;
                     break;  /* for */
                 }  /* else r == -1, OK */
             } else {  /* a != -1 */
                 if (r == -1) {
                     printf("* expected size: %d %d %d\n", a,r,i);
+                     printf("step2 is wrong 3\n");
+            system("pause");
                     flag = 1;
                     break;  /* for */
                 }
                 /* r != -1 */
                 if (!contain((short)a, r)) {
                     printf("* expected size: %d %d %d\n", a,r,i);
+                     printf("step2 is wrong 4\n");
+            system("pause");
                     flag = 1;
                     break;  /* for */
                 }
@@ -96,9 +103,11 @@ int test(int num_rep, int num_pos,
             }
         }
         if (flag) {
+            printf("step2 is wrong 5\n");
+            system("pause");
             break;  /* for */
         }
-          printf("step2 is ok\n");
+         printf("step2 is ok\n");
          system("pause");
         /* step 3: select a number of positions to insert a number of addrs */
         for (i = 0; i < num_pos; ++i) {
@@ -129,6 +138,8 @@ int test(int num_rep, int num_pos,
         for (i = 0; i < num_pop_lb2; ++i) {
             p = rand() % max_val;
             r = (int)hash_table_pop_lower_bound(&pool, (short)p);
+             printf("r=%d i=%d  p=%d\n",r,i,p);
+             print_hash_table(&pool);
             if (out) {
                 if (r != -1) {
                     printf("pop lower bound: %d %d (size: %d)\n", p, r, get_size(r));
@@ -147,18 +158,24 @@ int test(int num_rep, int num_pos,
             if (a == max_val) {  /* a == -1 */
                 if (r != -1) {
                     printf("* expected: -1\n");
+                       printf("step2 is wrong 2\n");
+            system("pause");
                     flag = 1;
                     break;  /* for */
                 }  /* else r == -1, OK */
             } else {  /* a != -1 */
                 if (r == -1) {
                     printf("* expected size: %d\n", a);
+                     printf("step2 is wrong 3\n");
+            system("pause");
                     flag = 1;
                     break;  /* for */
                 }
                 /* r != -1 */
                 if (!contain((short)a, r)) {
                     printf("* expected size: %d\n", a);
+                     printf("step2 is wrong 4\n");
+            system("pause");
                     flag = 1;
                     break;  /* for */
                 }
@@ -193,12 +210,13 @@ int main()
         return 1;
     }
     srand((unsigned int)time(NULL));
+    
     // if (test(1, 2, 4, 4, 4, 2, 4, 1)) {
     //     return 1;
     // }
       printf("0\n");
     system("pause");
-    if (test(10000, 10, 40, 40, 40, 20, 20, 0)) {
+    if (test(10000, 10, 40, 40, 40, 20, 20, 1)) {
         return 1;
     }
      printf("1\n");
