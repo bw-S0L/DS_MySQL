@@ -78,13 +78,13 @@ int test(int num_rep, int num_pos,
                 }  /* else r == -1, OK */
             } else {  /* a != -1 */
                 if (r == -1) {
-                    printf("* expected size: %d\n", a);
+                    printf("* expected size: %d %d\n", a,r);
                     flag = 1;
                     break;  /* for */
                 }
                 /* r != -1 */
                 if (!contain((short)a, r)) {
-                    printf("* expected size: %d\n", a);
+                    printf("* expected size: %d %d\n", a,r);
                     flag = 1;
                     break;  /* for */
                 }

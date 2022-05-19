@@ -331,7 +331,7 @@ void hash_table_pop(BufferPool *pool, short size, off_t addr) {
     }
 }
 
-/* void print_hash_table(BufferPool *pool) {
+ void print_hash_table(BufferPool *pool) {
     HashMapControlBlock *ctrl = (HashMapControlBlock*)get_page(pool, 0);
     HashMapDirectoryBlock *dir_block;
     off_t block_addr, next_addr;
@@ -364,4 +364,4 @@ void hash_table_pop(BufferPool *pool, short size, off_t addr) {
     }
     release(pool, 0);
     printf("------------------------------\n");
-} */
+} 

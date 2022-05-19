@@ -48,6 +48,6 @@ void hash_table_pop(BufferPool *pool, short size, off_t addr);
 
 /* END:   --------------------------------- DO NOT MODIFY! --------------------------------- */
 
-/* void print_hash_table(BufferPool *pool); */
+ void print_hash_table(BufferPool *pool); 
 
 #endif  /* _HASH_MAP_H */
