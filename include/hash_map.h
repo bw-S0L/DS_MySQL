@@ -20,10 +20,11 @@ typedef struct {
     off_t directory[HASH_MAP_DIR_BLOCK_SIZE];
 } HashMapDirectoryBlock;
 
-#define HASH_MAP_BLOCK_SIZE ((PAGE_SIZE - 2 * sizeof(off_t)) / sizeof(off_t))
+#define HASH_MAP_BLOCK_SIZE ((PAGE_SIZE - 3 * sizeof(off_t)) / sizeof(off_t))
 
 typedef struct {
     /* you can modify anything in this struct */
+    off_t prv;
     off_t next;
     off_t n_items;
     off_t table[HASH_MAP_BLOCK_SIZE];

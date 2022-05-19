@@ -6,6 +6,7 @@
         "xlocale": "c",
         "xmemory": "c",
         "xstring": "c",
-        "xutility": "c"
+        "xutility": "c",
+        "vector": "c"
     }
 }
