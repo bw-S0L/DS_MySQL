@@ -56,6 +56,8 @@ int test(int num_rep, int num_pos,
         for (i = 0; i < num_pop_lb1; ++i) {
             p = rand() % max_val;
             r = (int)hash_table_pop_lower_bound(&pool, (short)p);
+            printf("r=%d i=%d  p=%d\n",r,i,p);
+             print_hash_table(&pool);
             if (out) {
                 if (r != -1) {
                     printf("pop lower bound: %d %d (size: %d)\n", p, r, get_size(r));
@@ -79,13 +81,13 @@ int test(int num_rep, int num_pos,
                 }  /* else r == -1, OK */
             } else {  /* a != -1 */
                 if (r == -1) {
-                    printf("* expected size: %d %d\n", a,r);
+                    printf("* expected size: %d %d %d\n", a,r,i);
                     flag = 1;
                     break;  /* for */
                 }
                 /* r != -1 */
                 if (!contain((short)a, r)) {
-                    printf("* expected size: %d %d\n", a,r);
+                    printf("* expected size: %d %d %d\n", a,r,i);
                     flag = 1;
                     break;  /* for */
                 }

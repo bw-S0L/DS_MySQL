@@ -199,6 +199,7 @@ off_t hash_table_pop_lower_bound(BufferPool *pool, short size) {
 
 
 void hash_table_pop(BufferPool *pool, short size, off_t addr) {
+    printf("hash_table_pop\n");
     if(size>=0&&size<PAGE_SIZE){
          off_t pre ,now;
          HashMapBlock*mp,*fmp;
@@ -215,12 +216,14 @@ void hash_table_pop(BufferPool *pool, short size, off_t addr) {
            dir=(HashMapDirectoryBlock*)get_page(pool,pre);
            now=dir->directory[size%HASH_MAP_DIR_BLOCK_SIZE];
            mp=(HashMapBlock*)get_page(pool,now);
+           printf("%d ",size);
         }
 
          for(int i=0;i<mp->n_items;i++){
                if(mp->table[i]==addr){
                    mp->table[i]=-1;
                    mp->n_items--;
+                   printf("mp->n_items=%lld\n",mp->n_items);
                    
                    if(mp->n_items==0){
                     if(size==PAGE_MASK)
