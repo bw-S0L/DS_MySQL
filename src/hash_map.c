@@ -10,7 +10,7 @@ void hash_table_init(const char *filename, BufferPool *pool, off_t n_directory_b
     HashMapControlBlock*ctr=(HashMapControlBlock*)p->data;
     ctr->free_block_head=-1;
     ctr->n_directory_blocks=n_directory_blocks;
-    ctr->max_size=n_directory_blocks*HASH_MAP_DIR_BLOCK_SIZE-1;
+    ctr->max_size=n_directory_blocks*HASH_MAP_DIR_BLOCK_SIZE;
     release(pool,(off_t)0);
 
 
@@ -34,7 +34,7 @@ void hash_table_insert(BufferPool *pool, short size, off_t addr) {
    //haven't check if  have same addr 
     if( size>=0 && size<PAGE_SIZE){
      
-     if(size==PAGE_MASK){//127
+     /*if(size==PAGE_MASK){//127
           HashMapControlBlock*ctr=(HashMapControlBlock*)get_page(pool,(off_t)0);
           if(ctr->free_block_head==-1){
              ctr->free_block_head=pool->file.length;
@@ -83,7 +83,7 @@ void hash_table_insert(BufferPool *pool, short size, off_t addr) {
      } 
      
 
-    else{
+    else{*/
     int  dir_id=size/HASH_MAP_DIR_BLOCK_SIZE+1;
     int  r_id=size%HASH_MAP_DIR_BLOCK_SIZE;
     HashMapDirectoryBlock*dir=(HashMapDirectoryBlock*)get_page(pool,(off_t)(dir_id*PAGE_SIZE));
@@ -130,7 +130,7 @@ void hash_table_insert(BufferPool *pool, short size, off_t addr) {
         mp->table[i]=-1;
         release(pool,now);
      }
-    }
+    //}
     }
     }
 
@@ -151,7 +151,7 @@ off_t hash_table_pop_lower_bound(BufferPool *pool, short size) {
     HashMapBlock*mp;
     off_t pre,now,ans;
     HashMapDirectoryBlock*dir=(HashMapDirectoryBlock*)get_page(pool,(off_t)(dir_id*PAGE_SIZE));
-    while(dir->directory[r_id]==-1&&tmp_size<PAGE_MASK){
+    while(dir->directory[r_id]==-1&&tmp_size<PAGE_SIZE){
         tmp_size++;
       r_id=tmp_size%HASH_MAP_DIR_BLOCK_SIZE;
       if(r_id==0){
@@ -161,7 +161,7 @@ off_t hash_table_pop_lower_bound(BufferPool *pool, short size) {
       }
     }
 
-    if(tmp_size==PAGE_MASK){
+  /*  if(tmp_size==PAGE_MASK){
         release(pool,(off_t)(dir_id*PAGE_SIZE));
         HashMapControlBlock*ctr=(HashMapControlBlock*)get_page(pool,(off_t)0);
         if(ctr->free_block_head==-1){
@@ -176,12 +176,12 @@ off_t hash_table_pop_lower_bound(BufferPool *pool, short size) {
          release(pool,pre);
         }
     }
-    else{
+    else{*/
         pre=(off_t)(dir_id*PAGE_SIZE);
         now=dir->directory[r_id];
         mp=(HashMapBlock*)get_page(pool,now);
         release(pool,pre);
-    }
+   // }
 
     ans=mp->table[mp->n_items-1];
     release(pool,now);
@@ -205,19 +205,19 @@ void hash_table_pop(BufferPool *pool, short size, off_t addr) {
          HashMapBlock*mp,*fmp;
          HashMapControlBlock*ctr;
          HashMapDirectoryBlock*dir;
-        if(size==PAGE_MASK){
+      /*  if(size==PAGE_MASK){
             pre=0;
             ctr=(HashMapControlBlock*)get_page(pool,pre);
             now=ctr->free_block_head;
             mp=(HashMapBlock*)get_page(pool,now);
         }
-        else{
+        else{*/
            pre=(off_t)((size/HASH_MAP_DIR_BLOCK_SIZE+1)*PAGE_SIZE);
            dir=(HashMapDirectoryBlock*)get_page(pool,pre);
            now=dir->directory[size%HASH_MAP_DIR_BLOCK_SIZE];
            mp=(HashMapBlock*)get_page(pool,now);
            printf("%d \n",size);
-        }
+      //  }
 
          for(int i=0;i<mp->n_items;i++){
              printf("%lld  addr= %lld\n",mp->table[i],addr);
@@ -227,9 +227,9 @@ void hash_table_pop(BufferPool *pool, short size, off_t addr) {
                 
                    
                    if(mp->n_items==0){
-                    if(size==PAGE_MASK)
+                  /*  if(size==PAGE_MASK)
                      ctr->free_block_head=mp->next;
-                     else
+                     else*/
                      dir->directory[size%HASH_MAP_DIR_BLOCK_SIZE]=mp->next;
 
                      mp->prv=-1;
