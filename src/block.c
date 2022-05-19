@@ -23,10 +23,53 @@ ItemPtr get_item(Block *block, short idx) {
 }
 
 short new_item(Block *block, ItemPtr item, short item_size) {
-    
+    ItemID item_id;
+    for(short i=0;i<block->n_items;i++){
+        item_id=get_item_id(block,i);
+        if(get_item_id_availability(item_id)){
+            item_id=compose_item_id(0,block->tail_ptr-item_size,item_size);
+            get_item_id(block,i)=item_id;
+            block->tail_ptr-=item_size;
+            for(short j=0;j<item_size;j++){
+                *((char*)block+block->tail_ptr+j)=*(item+j);
+            }
+            return i;
+        }
+    }
+
+    item_id=compose_item_id(0,block->tail_ptr-item_size,item_size);
+    get_item_id(block,block->n_items)=item_id;
+    block->n_items++;
+    block->head_ptr+=(short)sizeof(ItemID);
+    block->tail_ptr-=item_size;
+      for(short j=0;j<item_size;j++){
+         *((char*)block+block->tail_ptr+j)=*(item+j);
+    }
+
+    return block->n_items-1;
+
 }
 
 void delete_item(Block *block, short idx) {
+     if (idx < 0 || idx >= block->n_items) {
+        printf("delete item error: idx is out of range\n");
+        return ;
+    }
+    ItemID item_id=get_item_id(block,idx);
+    if (get_item_id_availability(item_id)) {
+        printf("delete item error: item_id is not used\n");
+        return ;
+    }
+    
+    get_item_id(block,idx)=compose_item_id(1,0,0);  //set avalid
+    if(idx==block->n_items-1){
+         block->n_items--;
+         block->head_ptr-=(short)sizeof(ItemID);
+         block->tail_ptr+=get_item_id_size(item_id);
+    }
+    else{
+        block->tail_ptr+=get_item_id_size(item_id);
+    }
 }
 
 /* void str_printer(ItemPtr item, short item_size) {

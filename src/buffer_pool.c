@@ -27,7 +27,7 @@ void init_buffer_pool(const char *filename, BufferPool *pool){
 
 void close_buffer_pool(BufferPool *pool){
     for (int i = 0; i < CACHE_PAGE; i++){
-        write_page(&(pool->pages[i]),&(pool->file),&(pool->addrs[i]));
+        write_page(&(pool->pages[i]),&(pool->file),pool->addrs[i]);
     }
 
     close_file(&(pool->file));
@@ -68,13 +68,15 @@ Page *get_page(BufferPool *pool, off_t addr){
       if(k>=0&&k<CACHE_PAGE){
       pool->cnt[k]=1;
       pool->ref[k]=1;
-      write_page(&(pool->pages[k]),&(pool->file),&(pool->addrs[k]));
+      write_page(&(pool->pages[k]),&(pool->file),pool->addrs[k]);
       read_page(&(pool->pages[k]),&(pool->file),addr);
       return  &(pool->pages[k]);
       }
       else{
           printf("All buffer pool is used and not compare");
+           return  NULL;
       }
+     
 }
 
 void release(BufferPool *pool, off_t addr){

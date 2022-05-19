@@ -19,12 +19,12 @@ add_test(
     COMMAND $<TARGET_FILE:test_hash_map>
 )
 
-add_test(
-    NAME test_str
-    COMMAND $<TARGET_FILE:test_str>
-)
+# add_test(
+#     NAME test_str
+#     COMMAND $<TARGET_FILE:test_str>
+# )
 
-add_test(
-    NAME test_b_tree
-    COMMAND $<TARGET_FILE:test_b_tree>
-)
+# add_test(
+#     NAME test_b_tree
+#     COMMAND $<TARGET_FILE:test_b_tree>
+# )
