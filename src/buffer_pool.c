@@ -105,6 +105,7 @@ Page *get_page(BufferPool *pool, off_t addr){
     }
     else{
       read_page(&(pool->pages[k]),&(pool->file),addr);
+      pool->addrs[k]=addr;
     }
       return  &(pool->pages[k]);
       }
