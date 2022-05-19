@@ -49,6 +49,7 @@ int test(int num_rep, int num_pos,
             if (out) printf("insert: %d %d\n", pos[p], counter);
             ++counter;
         }
+         print_hash_table(&pool);
           printf("step1 is ok\n");
          system("pause");
         /* step 2: pop lower bound */
