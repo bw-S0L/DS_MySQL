@@ -6,7 +6,7 @@
 
 void init_buffer_pool(const char *filename, BufferPool *pool){
 
-    pool = (BufferPool *)malloc(sizeof(BufferPool));
+   
 
     open_file(&(pool->file), filename);
 
