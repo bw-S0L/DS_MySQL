@@ -212,14 +212,15 @@ void hash_table_pop(BufferPool *pool, short size, off_t addr) {
             mp=(HashMapBlock*)get_page(pool,now);
         }
         else{
-           pre=(off_t)(size/HASH_MAP_DIR_BLOCK_SIZE+1);
+           pre=(off_t)((size/HASH_MAP_DIR_BLOCK_SIZE+1)*PAGE_SIZE);
            dir=(HashMapDirectoryBlock*)get_page(pool,pre);
            now=dir->directory[size%HASH_MAP_DIR_BLOCK_SIZE];
            mp=(HashMapBlock*)get_page(pool,now);
-           printf("%d ",size);
+           printf("%d \n",size);
         }
 
          for(int i=0;i<mp->n_items;i++){
+             printf("%lld  addr= %lld\n",mp->table[i],addr);
                if(mp->table[i]==addr){
                    mp->table[i]=-1;
                    mp->n_items--;
