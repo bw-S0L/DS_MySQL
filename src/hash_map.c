@@ -5,7 +5,8 @@
 void hash_table_init(const char *filename, BufferPool *pool, off_t n_directory_blocks) {
     init_buffer_pool(filename, pool);
     /* TODO: add code here */
-
+    printf("file length = %lld\n",pool->file.length);
+    if(pool->file.length==0){
     Page* p=get_page(pool,(off_t)0);
     HashMapControlBlock*ctr=(HashMapControlBlock*)p->data;
     ctr->free_block_head=-1;
@@ -21,6 +22,7 @@ void hash_table_init(const char *filename, BufferPool *pool, off_t n_directory_b
             dir->directory[j]=-1;
         }
         release(pool,(off_t)(i*PAGE_SIZE));
+    }
     }
 }
 
