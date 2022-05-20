@@ -7,6 +7,11 @@
         "xmemory": "c",
         "xstring": "c",
         "xutility": "c",
-        "vector": "c"
+        "vector": "c",
+        "istream": "c",
+        "tuple": "c",
+        "type_traits": "c",
+        "utility": "c",
+        "xlocnum": "c"
     }
 }

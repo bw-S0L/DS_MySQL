@@ -31,7 +31,7 @@ short new_item(Block *block, ItemPtr item, short item_size) {
             get_item_id(block,i)=item_id;
             block->tail_ptr-=item_size;
             for(short j=0;j<item_size;j++){
-                *((char*)block+block->tail_ptr+j)=*(item+j);
+                *((char*)block+block->tail_ptr+j)=*((char*)item+j);
             }
             return i;
         }
@@ -43,7 +43,7 @@ short new_item(Block *block, ItemPtr item, short item_size) {
     block->head_ptr+=(short)sizeof(ItemID);
     block->tail_ptr-=item_size;
       for(short j=0;j<item_size;j++){
-         *((char*)block+block->tail_ptr+j)=*(item+j);
+         *((char*)block+block->tail_ptr+j)=*((char*)item+j);
     }
 
     return block->n_items-1;
@@ -60,16 +60,34 @@ void delete_item(Block *block, short idx) {
         printf("delete item error: item_id is not used\n");
         return ;
     }
-    
+    ItemID tmp;
+    short size;
+    size=get_item_id_size(item_id);
+    for(short i=0;i<block->n_items;i++){
+        if(i!=idx){
+            tmp=get_item_id(block,i);
+            // ''
+        if (get_item_id_availability(tmp)==0&&get_item_id_offset(tmp)<=get_item_id_offset(item_id)) {
+              get_item_id(block,i)=compose_item_id(0,get_item_id_offset(tmp)+size,get_item_id_size(tmp));
+        }
+        }
+    }
+
+    char*ptrn=(char*)block+get_item_id_offset(item_id)-1;
+    char*ptrb=(char*)block+block->tail_ptr;
+     //copy 
+    for(;ptrn>=ptrb;ptrn--){
+        *(ptrn+size)=*ptrn;
+    }
+
     get_item_id(block,idx)=compose_item_id(1,0,0);  //set avalid
+    block->tail_ptr+=size;
     if(idx==block->n_items-1){
          block->n_items--;
          block->head_ptr-=(short)sizeof(ItemID);
-         block->tail_ptr+=get_item_id_size(item_id);
+         
     }
-    else{
-        block->tail_ptr+=get_item_id_size(item_id);
-    }
+   
 }
 
 /* void str_printer(ItemPtr item, short item_size) {

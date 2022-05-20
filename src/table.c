@@ -36,6 +36,12 @@ void table_read(Table *table, RID rid, ItemPtr dest) {
 }
 
 RID table_insert(Table *table, ItemPtr src, short size) {
+    off_t block_addr;
+
+    block_addr=hash_table_pop_lower_bound(&table->fsm_pool,size);
+    if(block_addr==-1){
+        
+    }
 }
 
 void table_delete(Table *table, RID rid) {
