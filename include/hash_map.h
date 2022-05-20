@@ -49,5 +49,5 @@ void hash_table_pop(BufferPool *pool, short size, off_t addr);
 /* END:   --------------------------------- DO NOT MODIFY! --------------------------------- */
 
  void print_hash_table(BufferPool *pool); 
-
+off_t get_new_hash_block(BufferPool *pool);
 #endif  /* _HASH_MAP_H */

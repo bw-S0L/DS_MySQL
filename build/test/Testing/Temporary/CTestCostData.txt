@@ -1,2 +1,2 @@
-test_hash_map 3 50.8534
+test_hash_map 4 42.9378
 ---

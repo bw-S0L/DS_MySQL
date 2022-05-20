@@ -26,6 +26,13 @@ short table_block_get_total_items(Table *table, off_t block_addr) {
 }
 
 void table_read(Table *table, RID rid, ItemPtr dest) {
+      off_t block_addr=get_rid_block_addr(rid);
+      short idx=get_rid_idx(rid); 
+
+      Block* block=(Block*)get_page(&table->data_pool,block_addr);
+      ItemPtr item=get_item(block,idx);
+      *dest=*item;
+
 }
 
 RID table_insert(Table *table, ItemPtr src, short size) {
