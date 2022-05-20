@@ -47,13 +47,13 @@ int compare_string_record(Table *table, const StringRecord *a, const StringRecor
 }
 
 RID write_string(Table *table, const char *data, off_t size) {
-       int size=strlen(data);
+       
        StringChunk chunk;
-       int num=(size-1)/STR_CHUNK_MAX_LEN+1;
-       int last_size=size%STR_CHUNK_MAX_LEN;
+       off_t num=(size-1)/STR_CHUNK_MAX_LEN+1;
+       off_t last_size=size%STR_CHUNK_MAX_LEN;
        RID rid;
        char*ptr;
-       for(int i=num;i>0;i--){
+       for(off_t i=num;i>0;i--){
            if(i==num){
             get_rid_block_addr(rid)=-1;
             get_rid_idx(rid)=-1;

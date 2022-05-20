@@ -1,40 +1,18 @@
-Start testing: May 20 15:40 ?D1迆㊣那℅?那㊣??
+Start testing: May 20 18:35 ?D1迆㊣那℅?那㊣??
 ----------------------------------------------------------
-1/1 Testing: test_hash_map
-1/1 Test: test_hash_map
-Command: "C:/Users/86198/Desktop/DS/PJ/pj2/myjql/build/test/Debug/test_hash_map.exe"
+1/1 Testing: test_str
+1/1 Test: test_str
+Command: "C:/Users/86198/Desktop/DS/PJ/pj2/myjql/build/test/Debug/test_str.exe"
 Directory: C:/Users/86198/Desktop/DS/PJ/pj2/myjql/build/test
-"test_hash_map" start time: May 20 15:40 ?D1迆㊣那℅?那㊣??
+"test_str" start time: May 20 18:35 ?D1迆㊣那℅?那㊣??
 Output:
 ----------------------------------------------------------
-0
-length=0max_val = 128
-num_valid_pool 2_3=7  cmp=8
-step5.5 is ok
-step6 is ok
-step7 is ok
-1
-length=0max_val = 128
-step5.5 is ok
-step6 is ok
-step7 is ok
-2
-length=0max_val = 128
-step5.5 is ok
-step6 is ok
-step7 is ok
-3
-length=0max_val = 128
-step5.5 is ok
-step6 is ok
-step7 is ok
-4
 <end of output>
-Test time = 198.38 sec
+Test time =   0.01 sec
 ----------------------------------------------------------
-Test Passed.
-"test_hash_map" end time: May 20 15:43 ?D1迆㊣那℅?那㊣??
-"test_hash_map" time elapsed: 00:03:18
+Test Failed.
+"test_str" end time: May 20 18:35 ?D1迆㊣那℅?那㊣??
+"test_str" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-End testing: May 20 15:43 ?D1迆㊣那℅?那㊣??
+End testing: May 20 18:35 ?D1迆㊣那℅?那㊣??
