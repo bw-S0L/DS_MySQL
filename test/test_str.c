@@ -119,7 +119,7 @@ int test(int max_str_len, int num_op, int out)
             }
             
         }
-        printf("%d   ",i);
+      //  printf("%d   ",i);
     }
 
     /* validate_buffer_pool(&table.data_pool); */
@@ -133,7 +133,7 @@ int test(int max_str_len, int num_op, int out)
         printf("error deleting: zztest-str.fsm\n");
     }
     printf("\nflag=%d\n",flag);
-    system("pause");
+   // system("pause");
     return flag;
 }
 
@@ -144,12 +144,12 @@ int main()
     // if (test(10, 30, 1)) {
     //     return 1;
     // }
-    if (test(512, 100, 0)) {
+    if (test(512, 10000, 0)) {
         system("pause");
         return 1;
     }
   
     printf("Success\n");
-      system("pause");
+      //system("pause");
     return 0;
 }

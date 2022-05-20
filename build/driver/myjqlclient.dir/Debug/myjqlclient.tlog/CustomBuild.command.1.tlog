@@ -1,0 +1,10 @@
+^C:\USERS\86198\DESKTOP\DS\PJ\PJ2\MYJQL\DRIVER\CMAKELISTS.TXT
+setlocal
+C:\Users\86198\Desktop\cmake-3.21.3-windows-x86_64\bin\cmake.exe -SC:/Users/86198/Desktop/DS/PJ/pj2/myjql -BC:/Users/86198/Desktop/DS/PJ/pj2/myjql/build --check-stamp-file C:/Users/86198/Desktop/DS/PJ/pj2/myjql/build/driver/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
