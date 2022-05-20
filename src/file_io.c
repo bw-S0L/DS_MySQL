@@ -20,6 +20,7 @@ FileIOResult open_file(FileInfo *file, const char *filename) {
         close_file(file);
         return INVALID_LEN;
     }
+    printf("%s  file length = %lld\n",filename,file->length);
     return FILE_IO_SUCCESS;
 }
 

@@ -7,9 +7,9 @@
 void init_buffer_pool(const char *filename, BufferPool *pool){
 
    
-
-    open_file(&(pool->file), filename);
-
+    FileIOResult result;
+    result=open_file(&(pool->file), filename);
+    if(result==FILE_IO_SUCCESS){
     for (int i = 0; i < CACHE_PAGE; i++)
     {
         for (int j = 0; j < PAGE_SIZE; j++)
@@ -22,6 +22,10 @@ void init_buffer_pool(const char *filename, BufferPool *pool){
         pool->ref[i] = (size_t)0;
 
 
+    }
+    }
+    else{
+        printf("FileIOResult=%d\n",result);
     }
 }
 
@@ -40,7 +44,8 @@ void close_buffer_pool(BufferPool *pool){
 Page *get_page(BufferPool *pool, off_t addr){
      
      if(pool->file.length<addr){
-         printf("get page: pool->file.length<addr\n");
+         printf("get page: pool->file.length= %lld<addr= %lld \n",pool->file.length,addr);
+         system("pause");
          return NULL;
      }
      int k=-1;
@@ -113,7 +118,7 @@ Page *get_page(BufferPool *pool, off_t addr){
       //more than CACHE_PAGE(8) use pages
     else{
           printf("All buffer pool is used and not compare\n");
-          // system("pause");
+          
            return  NULL;
       }
      

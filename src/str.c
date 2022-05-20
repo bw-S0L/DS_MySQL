@@ -30,9 +30,12 @@ int has_next_char(StringRecord *record) {
 }
 
 char next_char(Table *table, StringRecord *record) {
-     
+     char a;
      if(record->idx<get_str_chunk_size(&(record->chunk))){
-            return *(get_str_chunk_data_ptr(&(record->chunk))+record->idx);
+           a= *(get_str_chunk_data_ptr(&(record->chunk))+record->idx);
+         (record->idx)++;
+            return  a;
+            
       }
       else{ 
           //make sure have next chunk
@@ -49,10 +52,18 @@ int compare_string_record(Table *table, const StringRecord *a, const StringRecor
 RID write_string(Table *table, const char *data, off_t size) {
        
        StringChunk chunk;
-       off_t num=(size-1)/STR_CHUNK_MAX_LEN+1;
-       off_t last_size=size%STR_CHUNK_MAX_LEN;
+       off_t num,last_size;
+       if(size==0){
+         num=1;
+         last_size=0;
+       }
+       else{
+        num=(size-1)/STR_CHUNK_MAX_LEN+1;
+        last_size=(size-1)%STR_CHUNK_MAX_LEN+1;
+       }
        RID rid;
        char*ptr;
+     //  printf("length=%lld  num=%lld\n",size,num);
        for(off_t i=num;i>0;i--){
            if(i==num){
             get_rid_block_addr(rid)=-1;
@@ -66,11 +77,17 @@ RID write_string(Table *table, const char *data, off_t size) {
 
             get_str_chunk_rid(&chunk)=rid;
             ptr=get_str_chunk_data_ptr(&chunk);
+            //printf("insert:\n");
             for(int j=0;j<get_str_chunk_size(&chunk);j++){
-                *(ptr+j)=*(data+STR_CHUNK_MAX_LEN*(num-1)+j);
+                *(ptr+j)=*(data+STR_CHUNK_MAX_LEN*(i-1)+j);
+               // printf("%c",*(data+STR_CHUNK_MAX_LEN*(i-1)+j));
             }
-
-            rid=table_insert(table,&chunk,get_str_chunk_size(&chunk));
+           // printf("\n");
+             
+             
+            rid=table_insert(table,&chunk,calc_str_chunk_size(get_str_chunk_size(&chunk)));
+           //  printf("insert %lld  size=%d addr=%lld  idx=%d  allsize=%lld\n",i,get_str_chunk_size(&chunk),get_rid_block_addr(rid),get_rid_idx(rid),calc_str_chunk_size(get_str_chunk_size(&chunk)));
+          //  printf("insert ok\n");
        }
 
        return rid;
@@ -100,13 +117,15 @@ void delete_string(Table *table, RID rid) {
 } */
 
 size_t load_string(Table *table, const StringRecord *record, char *dest, size_t max_size) {
-    short size=get_str_chunk_size(&(record->chunk));
-    char* ptr=get_str_chunk_data_ptr(&(record->chunk));
-    int i=0;
-    for(;i<size&&i<max_size;i++){
-          *(dest+i)=*(ptr+i);
-    }
-
+    StringRecord *mp=record;
+    size_t i=0;
+    
+    while(has_next_char(mp)){
+          *(dest+i)=next_char(table,mp);
+          i++;
+         // printf("i=%lld char=%c  idx=%d\n",i,*(dest+i-1),mp->idx);
+     }
+     //system("pause");
     return i;
 }
 

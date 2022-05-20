@@ -1,4 +1,0 @@
-test_hash_map 5 39.6758
-test_str 0 0
----
-test_str

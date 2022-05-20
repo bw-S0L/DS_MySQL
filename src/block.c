@@ -10,7 +10,7 @@ void init_block(Block *block) {
 
 ItemPtr get_item(Block *block, short idx) {
     if (idx < 0 || idx >= block->n_items) {
-        printf("get item error: idx is out of range\n");
+        printf("get item error: idx is out of range idx=%d\n",idx);
         return NULL;
     }
     ItemID item_id = get_item_id(block, idx);

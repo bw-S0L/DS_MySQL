@@ -57,9 +57,10 @@ int test(int max_str_len, int num_op, int out)
 
     Table table;
     table_init(&table, "zztest-str.data", "zztest-str.fsm");
-    
+    //system("pause");
     for (i = 0; i < num_op; ++i) {
         op = rand() % 3;
+       
         if (op == 0 && get_total() != 0) {  /* read */
             m_rid = get_rid(rand() % (int)get_total());
             get_rid_block_addr(rid) = m_rid.addr;
@@ -68,55 +69,71 @@ int test(int max_str_len, int num_op, int out)
                 printf("read: ");
                 print_rid(rid);
                 printf("\n");
+                printf("test=0\n");
             }
+            
             read_string(&table, rid, &rec);
             n = (int)load_string(&table, &rec, buf, N);
             buf[n] = 0;
+             //printf("read n=%d\n",n);
             if (equal(m_rid, buf)) {
                 if (out) {
                     printf("OK\n");
                 }
             } else {
-                printf("* error\n");
+                printf("*read error\n");
+                //system("pause");
                 flag = 1;
                 break;  /* for */
             }
+           
         } if (op == 1 && get_total() != 0) {  /* delete */
             m_rid = get_rid(rand() % (int)get_total());
             get_rid_block_addr(rid) = m_rid.addr;
             get_rid_idx(rid) = m_rid.idx;
+             
             if (out) {
                 printf("delete: ");
                 print_rid(rid);
                 printf("\n");
             }
+           //  printf("test=1\n");
             delete_string(&table, rid);
             erase(m_rid);
+           
         } else {  /* write */
+           // printf("test=2\n");
             n = generate_string(max_str_len);
+           
             rid = write_string(&table, buf, n);
             m_rid.addr = get_rid_block_addr(rid);
             m_rid.idx = get_rid_idx(rid);
+            
             insert(m_rid, buf);
+            
             if (out) {
+                 printf("write\n");
                 printf("insert: %s, len = %d @ ", buf, n);
                 print_rid(rid);
                 printf("\n");
             }
+            
         }
+        printf("%d   ",i);
     }
 
     /* validate_buffer_pool(&table.data_pool); */
     /* validate_buffer_pool(&table.fsm_pool); */
     table_close(&table);
-
+    
     if (remove("zztest-str.data")) {
         printf("error deleting: zztest-str.data\n");
     }
     if (remove("zztest-str.fsm")) {
         printf("error deleting: zztest-str.fsm\n");
     }
-
+    printf("\nflag=%d\n",flag);
+    system("pause");
     return flag;
 }
 
@@ -127,8 +144,12 @@ int main()
     // if (test(10, 30, 1)) {
     //     return 1;
     // }
-    if (test(512, 10000, 0)) {
+    if (test(512, 100, 0)) {
+        system("pause");
         return 1;
     }
+  
+    printf("Success\n");
+      system("pause");
     return 0;
 }
