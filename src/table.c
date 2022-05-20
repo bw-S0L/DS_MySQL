@@ -31,20 +31,102 @@ void table_read(Table *table, RID rid, ItemPtr dest) {
 
       Block* block=(Block*)get_page(&table->data_pool,block_addr);
       ItemPtr item=get_item(block,idx);
-      *dest=*item;
 
+      ItemID item_id=get_item_id(block, idx);
+      short size=get_item_id_size(item_id);
+
+      for(int i=0;i<size;i++){
+      *(dest+i)=*(item+i);
+      }
+
+      release(&table->data_pool,block_addr);
 }
 
 RID table_insert(Table *table, ItemPtr src, short size) {
     off_t block_addr;
-
+    short newsize;
+    ItemID item_id;
+    Block* block;
+    RID rid;
+    int tag=1;
     block_addr=hash_table_pop_lower_bound(&table->fsm_pool,size);
+
+    //add a block
     if(block_addr==-1){
-        
+        block_addr=table->data_pool.file.length;
+        block=(Block*)get_page(&table->data_pool,block_addr);
+        init_block(block);
     }
+     //
+    else{
+      block=(Block*)get_page(&table->data_pool,block_addr);
+    }
+      get_rid_block_addr(rid)=block_addr;
+      get_rid_idx(rid)=new_item(block,src,size);
+
+      newsize=block->tail_ptr-block->head_ptr;
+
+      for(short i=0;i<block->n_items;i++){
+           item_id=get_item_id(block,i);
+           if(get_item_id_availability(item_id)){
+               tag=0;
+               break;
+           }
+      }
+      if(tag){
+          newsize-=sizeof(ItemID);
+          newsize=newsize<0?0:newsize;
+      }
+
+    hash_table_insert(&table->fsm_pool,newsize,block_addr);
+    release(&table->data_pool,block_addr);
+    return rid;
 }
 
-void table_delete(Table *table, RID rid) {
+void table_delete(Table *table, RID rid){
+   short idx=get_rid_idx(rid);
+   off_t addr=get_rid_block_addr(rid);
+   short newsize,oldsize;
+   int tag1=1,tag2=1;
+   ItemID item_id;
+
+   Block*block=( Block*)get_page(&table->data_pool,addr);
+   
+   //oldsize
+   oldsize=block->tail_ptr-block->head_ptr;
+      for(short i=0;i<block->n_items;i++){
+           item_id=get_item_id(block,i);
+           if(get_item_id_availability(item_id)){
+               tag2=0;
+               break;
+           }
+      }
+
+      if(tag2){
+          oldsize-=sizeof(ItemID);
+          oldsize=oldsize<0?0:oldsize;
+      }
+    //
+      delete_item(block,idx);
+   //newsize
+   newsize=block->tail_ptr-block->head_ptr;
+      for(short i=0;i<block->n_items;i++){
+           item_id=get_item_id(block,i);
+           if(get_item_id_availability(item_id)){
+               tag1=0;
+               break;
+           }
+      }
+      if(tag1){
+          newsize-=sizeof(ItemID);
+          newsize=newsize<0?0:newsize;
+      }
+    //
+
+    hash_table_pop(&table->fsm_pool,oldsize,addr);
+    hash_table_insert(&table->fsm_pool,newsize,addr);
+    release(&table->data_pool,addr);
+
 }
 
 /* void print_table(Table *table, printer_t printer) {

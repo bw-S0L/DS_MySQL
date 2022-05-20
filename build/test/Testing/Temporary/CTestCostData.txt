@@ -1,2 +1,4 @@
 test_hash_map 4 42.9378
+test_str 0 0
 ---
+test_str
