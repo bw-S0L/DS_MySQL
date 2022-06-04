@@ -29,15 +29,51 @@ typedef struct {
 typedef int (*b_tree_row_row_cmp_t)(RID, RID);
 typedef int (*b_tree_ptr_row_cmp_t)(void *, size_t, RID);
 
+/*
+ * when inserting rid into a non-leaf node in b_tree,
+ * the key (referenced by rid) might be copied and returned.
+ * 
+ * most simple logic for the handler:
+ * 1) copy the key according to rid;
+ * 2) return the rid of the newly-copied key.
+ * 
+ * example usage:
+ * b_tree_insert_nonleaf_handler_t insert_handler;
+ * rid to insert: RID rid;
+ * current node: BNode *node; (node is NOT a leaf node, i.e. !node->leaf)
+ * the position to insert: (signed/unsigned) integer k;
+ * code:
+ * node->row_ptr[k] = insert_handler(rid);
+ * 
+ * note: the handler may also be needed for redistribution in deletion
+ */
+typedef RID (*b_tree_insert_nonleaf_handler_t)(RID rid);
+
+/*
+ * when deleting rid from a non-leaf node in b_tree,
+ * the key (referenced by rid) might be deleted.
+ * 
+ * most simple logic for the hanlder:
+ * delete the key according to rid.
+ * 
+ * example usage:
+ * b_tree_delete_nonleaf_handler_t delete_handler;
+ * current node: BNode *node; (node is NOT a leaf node, i.e. !node->leaf)
+ * the position to delete: (signed/unsigned) integer k;
+ * code:
+ * delete_handler(node->row_ptr[k]);
+ */
+typedef void (*b_tree_delete_nonleaf_handler_t)(RID rid);
+
 void b_tree_init(const char *filename, BufferPool *pool);
 
 void b_tree_close(BufferPool *pool);
 
 RID b_tree_search(BufferPool *pool, void *key, size_t size, b_tree_ptr_row_cmp_t cmp);
 
-RID b_tree_insert(BufferPool *pool, RID rid, b_tree_row_row_cmp_t cmp);
+RID b_tree_insert(BufferPool *pool, RID rid, b_tree_row_row_cmp_t cmp, b_tree_insert_nonleaf_handler_t insert_handler);
 
-void b_tree_delete(BufferPool *pool, RID rid, b_tree_row_row_cmp_t cmp);
+void b_tree_delete(BufferPool *pool, RID rid, b_tree_row_row_cmp_t cmp, b_tree_insert_nonleaf_handler_t insert_handler, b_tree_delete_nonleaf_handler_t delete_handler);
 
 /* END:   --------------------------------- DO NOT MODIFY! --------------------------------- */
 

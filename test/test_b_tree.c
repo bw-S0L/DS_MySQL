@@ -40,6 +40,16 @@ int rid_ptr_row_cmp(void *p, size_t size, RID b) {
     return op(a, get_rid_block_addr(b));
 }
 
+RID insert_handler(RID rid) {
+    RID new_rid;
+    get_rid_block_addr(new_rid) = get_rid_block_addr(rid);
+    get_rid_idx(new_rid) = -1;
+    return new_rid;
+}
+
+void delete_handler(RID rid) {
+}
+
 int test(int num_op, int out)
 {
     int flag = 0;
@@ -61,7 +71,7 @@ int test(int num_op, int out)
                 print_rid(rid);
                 printf("\n");
             }
-            b_tree_insert(&pool, rid, &rid_row_row_cmp);
+            b_tree_insert(&pool, rid, &rid_row_row_cmp, &insert_handler);
             insert(get_rid_block_addr(rid), get_rid_idx(rid));
         } else if (op == 1 && get_total() != 0) {  /* erase */
             get_rid_block_addr(rid) = get_addr(rand() % (int)get_total());
@@ -71,7 +81,7 @@ int test(int num_op, int out)
                 print_rid(rid);
                 printf("\n");
             }
-            b_tree_delete(&pool, rid, &rid_row_row_cmp);
+            b_tree_delete(&pool, rid, &rid_row_row_cmp, &insert_handler, &delete_handler);
             erase(get_rid_block_addr(rid));
         } else {  /* find */
             if (rand() % 2 && get_total() != 0) {
@@ -142,7 +152,10 @@ int main()
         printf("error: BNode size is too large\n");
         return 1;
     }
-    srand((unsigned int)time(NULL));
+    
+    /* fixed random seed */
+    srand(0);
+    // srand((unsigned int)time(NULL));
 
     // if (test(50, 1)) {
     //     return 1;
@@ -150,5 +163,8 @@ int main()
     if (test(2000000, 0)) {
         return 1;
     }
+
+    /* prevent using exit(0) to pass the test */
+    printf("END OF TEST\n");
     return 0;
 }
