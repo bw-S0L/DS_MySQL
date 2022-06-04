@@ -5,15 +5,15 @@
 #include "table.h"
 
 /* it MUST be satisfied that: DEGREE >= 2 */
-#define DEGREE (((PAGE_SIZE) - sizeof(size_t) - sizeof(off_t) - sizeof(char) + sizeof(RID)) / 2 / (sizeof(off_t) + sizeof(RID)))
+#define DEGREE (((PAGE_SIZE) - sizeof(size_t) - sizeof(off_t) - sizeof(char) + sizeof(RID)) / 2 / (sizeof(off_t) + sizeof(RID)))   //3
 
 typedef struct {
   /* B-Tree Node */
   /* you can modify anything in this struct */
   size_t n;
   off_t next;
-  off_t child[2 * DEGREE];
-  RID row_ptr[2 * DEGREE - 1];
+  off_t child[2 * DEGREE];              //6
+  RID row_ptr[2 * DEGREE - 1];          //5
   char leaf;
 } BNode;
 

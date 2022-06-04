@@ -24,6 +24,7 @@ int test(int num_rep, int num_pos,
 {
     BufferPool pool;
     hash_table_init("zztest-hashmap", &pool, 8);
+   // printf("file length=%lld\n",pool.file.length);
   //  print_hash_table(&pool);
     int max_val = 8 * HASH_MAP_DIR_BLOCK_SIZE;
     int counter = 1;

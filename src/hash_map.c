@@ -38,10 +38,16 @@ void hash_table_insert(BufferPool *pool, short size, off_t addr) {
      
     int  dir_id=size/HASH_MAP_DIR_BLOCK_SIZE+1;
     int  r_id=size%HASH_MAP_DIR_BLOCK_SIZE;
+    off_t store_addr;
     HashMapDirectoryBlock*dir=(HashMapDirectoryBlock*)get_page(pool,(off_t)(dir_id*PAGE_SIZE));
     if(dir->directory[r_id]==-1){
-        dir->directory[r_id]=pool->file.length;
-        HashMapBlock*mp=(HashMapBlock*)get_page(pool,pool->file.length);
+          store_addr=get_new_hash_block(pool);
+
+        if(store_addr==-1)
+          store_addr=pool->file.length;
+
+        dir->directory[r_id]=store_addr;
+        HashMapBlock*mp=(HashMapBlock*)get_page(pool,store_addr);
         release(pool,(off_t)(dir_id*PAGE_SIZE));
         mp->prv=(off_t)(dir_id*PAGE_SIZE);
         mp->next=-1;
@@ -49,13 +55,15 @@ void hash_table_insert(BufferPool *pool, short size, off_t addr) {
         mp->table[0]=addr;
         for(int i=1;i<HASH_MAP_BLOCK_SIZE;i++)
         mp->table[i]=-1;
-        release(pool,pool->file.length-PAGE_SIZE);
+        release(pool,store_addr);
     }
     else{
      HashMapBlock*mp=(HashMapBlock*)get_page(pool,dir->directory[r_id]);
      off_t pre,now=dir->directory[r_id];
      pre=dir_id*PAGE_SIZE;
      release(pool,pre);
+
+
      while(mp->n_items==HASH_MAP_BLOCK_SIZE&&mp->next>=0){
          pre=now;
          now=mp->next;
@@ -69,7 +77,13 @@ void hash_table_insert(BufferPool *pool, short size, off_t addr) {
          release(pool,now);
      }
      else{
-        mp->next=pool->file.length;
+
+        store_addr=get_new_hash_block(pool);
+
+        if(store_addr==-1)
+          store_addr=pool->file.length;
+        
+        mp->next=store_addr;
         pre=now;
         now=mp->next;
         mp=(HashMapBlock*)get_page(pool,now);
@@ -82,8 +96,9 @@ void hash_table_insert(BufferPool *pool, short size, off_t addr) {
         mp->table[i]=-1;
         release(pool,now);
      }
-    //}
+   
     }
+
     }
 
 
@@ -183,7 +198,8 @@ void hash_table_pop(BufferPool *pool, short size, off_t addr) {
                         pool->file.length-=PAGE_SIZE;
                     }
                     else{
-                         release(pool,now);;
+                         release(pool,now);
+                         release_new_hash_block(pool,now);
                     }
                   
                    }
@@ -240,7 +256,8 @@ void hash_table_pop(BufferPool *pool, short size, off_t addr) {
                         pool->file.length-=PAGE_SIZE;
                     }
                      else{
-                         release(pool,now);;
+                         release(pool,now);
+                         release_new_hash_block(pool,now);
                     }
     
 
@@ -310,13 +327,78 @@ off_t get_new_hash_block(BufferPool *pool){
     off_t ans;
     ctr=(HashMapControlBlock*)get_page(pool,0);
     if(ctr->free_block_head!=-1){
+        off_t tmp=ctr->free_block_head;
         mp=(HashMapBlock*)get_page(pool,ctr->free_block_head);
         ans=mp->table[mp->n_items-1];
         mp->table[mp->n_items-1]=-1;
         mp->n_items--;
+        // addr 1 store its self
         if(mp->n_items==0){
-            
+            ctr->free_block_head=mp->next;
+            mp->next=-1;
         }
+        release(pool,0);
+        release(pool,tmp);
+        return ans;
+    }
+
+
+    else{
+        release(pool,0);
+        return -1;
+    }
+}
+
+void release_new_hash_block(BufferPool*pool,off_t addr){
+     HashMapControlBlock*ctr;
+    HashMapBlock*mp;
+
+    ctr=(HashMapControlBlock*)get_page(pool,0);
+
+    if(ctr->free_block_head!=-1){
+         off_t pre,now;
+        now=ctr->free_block_head;
+        mp=(HashMapBlock*)get_page(pool,ctr->free_block_head);
+        release(pool,0);
+       
+        
+        while(mp->n_items==HASH_MAP_BLOCK_SIZE&&mp->next>=0){
+         pre=now;
+         now=mp->next;
+         mp=(HashMapBlock*)get_page(pool,now);
+         release(pool,pre);
+        }
+
+        if(mp->n_items<HASH_MAP_BLOCK_SIZE){
+         mp->table[mp->n_items]=addr;
+         mp->n_items++;
+         release(pool,now);
+     }
+     else{
+        mp->next=addr;
+        pre=now;
+        now=mp->next;
+        mp=(HashMapBlock*)get_page(pool,now);
+        release(pool,pre);
+        mp->prv=pre;
+        mp->next=-1;
+        mp->n_items=1;
+        mp->table[0]=addr;
+        release(pool,now);
+     }
+
+    }
+    else{
+        ctr->free_block_head=addr;
+        release(pool,0);
+
+        mp=(HashMapBlock*)get_page(pool,addr);
+        mp->next=-1;
+        mp->n_items=1;
+        mp->table[0]=addr;
+
+        release(pool,addr);
+        
     }
 
 }

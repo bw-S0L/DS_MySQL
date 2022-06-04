@@ -1,50 +1,10 @@
-Start testing: May 20 22:31 ?D1迆㊣那℅?那㊣??
+Start testing: Jun 05 00:10 ?D1迆㊣那℅?那㊣??
 ----------------------------------------------------------
-1/2 Testing: test_hash_map
-1/2 Test: test_hash_map
-Command: "C:/Users/86198/Desktop/DS/PJ/pj2/myjql/build/test/Debug/test_hash_map.exe"
-Directory: C:/Users/86198/Desktop/DS/PJ/pj2/myjql/build/test
-"test_hash_map" start time: May 20 22:31 ?D1迆㊣那℅?那㊣??
-Output:
-----------------------------------------------------------
-0
-zztest-hashmap  file length = 0
-max_val = 128
-step5.5 is ok
-step6 is ok
-step7 is ok
-1
-zztest-hashmap  file length = 0
-max_val = 128
-step5.5 is ok
-step6 is ok
-step7 is ok
-2
-zztest-hashmap  file length = 0
-max_val = 128
-step5.5 is ok
-step6 is ok
-step7 is ok
-3
-zztest-hashmap  file length = 0
-max_val = 128
-step5.5 is ok
-step6 is ok
-step7 is ok
-4
-<end of output>
-Test time = 131.75 sec
-----------------------------------------------------------
-Test Passed.
-"test_hash_map" end time: May 20 22:33 ?D1迆㊣那℅?那㊣??
-"test_hash_map" time elapsed: 00:02:11
-----------------------------------------------------------
-
-2/2 Testing: test_str
-2/2 Test: test_str
+1/1 Testing: test_str
+1/1 Test: test_str
 Command: "C:/Users/86198/Desktop/DS/PJ/pj2/myjql/build/test/Debug/test_str.exe"
 Directory: C:/Users/86198/Desktop/DS/PJ/pj2/myjql/build/test
-"test_str" start time: May 20 22:33 ?D1迆㊣那℅?那㊣??
+"test_str" start time: Jun 05 00:10 ?D1迆㊣那℅?那㊣??
 Output:
 ----------------------------------------------------------
 zztest-str.data  file length = 0
@@ -53,11 +13,11 @@ zztest-str.fsm  file length = 0
 flag=0
 Success
 <end of output>
-Test time =  79.33 sec
+Test time =  61.95 sec
 ----------------------------------------------------------
 Test Passed.
-"test_str" end time: May 20 22:35 ?D1迆㊣那℅?那㊣??
-"test_str" time elapsed: 00:01:19
+"test_str" end time: Jun 05 00:11 ?D1迆㊣那℅?那㊣??
+"test_str" time elapsed: 00:01:01
 ----------------------------------------------------------
 
-End testing: May 20 22:35 ?D1迆㊣那℅?那㊣??
+End testing: Jun 05 00:11 ?D1迆㊣那℅?那㊣??

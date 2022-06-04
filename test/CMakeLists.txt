@@ -14,10 +14,10 @@ add_executable(test_b_tree
 
 enable_testing()
 
-add_test(
-    NAME test_hash_map
-    COMMAND $<TARGET_FILE:test_hash_map>
-)
+# add_test(
+#     NAME test_hash_map
+#     COMMAND $<TARGET_FILE:test_hash_map>
+# )
 
 add_test(
     NAME test_str
