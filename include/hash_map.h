@@ -51,4 +51,6 @@ void hash_table_pop(BufferPool *pool, short size, off_t addr);
  void print_hash_table(BufferPool *pool); 
 off_t get_new_hash_block(BufferPool *pool);
 void release_new_hash_block(BufferPool*pool,off_t addr);
+
+void my_hash_table_pop(BufferPool *pool, short size, off_t addr,int index);
 #endif  /* _HASH_MAP_H */

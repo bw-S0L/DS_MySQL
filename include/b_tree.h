@@ -12,6 +12,7 @@ typedef struct {
   /* you can modify anything in this struct */
   size_t n;
   off_t next;
+  off_t parent;
   off_t child[2 * DEGREE];              //6
   RID row_ptr[2 * DEGREE - 1];          //5
   char leaf;
