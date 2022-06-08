@@ -187,8 +187,8 @@ void hash_table_pop(BufferPool *pool, short size, off_t addr) {
                     if(now==pool->file.length-PAGE_SIZE){
                         for(int j=0;j<CACHE_PAGE;j++){
                             if(pool->addrs[j]==now){
-                                for(int l=0;l<PAGE_SIZE;l++)
-                                   pool->pages[j].data[l]=0;
+                                // for(int l=0;l<PAGE_SIZE;l++)
+                                //    pool->pages[j].data[l]=0;
                                 pool->addrs[j]=-1;
                                 pool->cnt[j]=1;
                                 pool->ref[j]=0;
@@ -245,8 +245,8 @@ void hash_table_pop(BufferPool *pool, short size, off_t addr) {
                     if(now==pool->file.length-PAGE_SIZE){
                         for(int j=0;j<CACHE_PAGE;j++){
                             if(pool->addrs[j]==now){
-                                for(int l=0;l<PAGE_SIZE;l++)
-                                   pool->pages[j].data[l]=0;
+                                // for(int l=0;l<PAGE_SIZE;l++)
+                                //    pool->pages[j].data[l]=0;
                                 pool->addrs[j]=-1;
                                 pool->cnt[j]=1;
                                 pool->ref[j]=0;
@@ -431,8 +431,8 @@ void my_hash_table_pop(BufferPool *pool, short size, off_t addr,int index){
                     if(now==pool->file.length-PAGE_SIZE){
                         for(int j=0;j<CACHE_PAGE;j++){
                             if(pool->addrs[j]==now){
-                                for(int l=0;l<PAGE_SIZE;l++)
-                                   pool->pages[j].data[l]=0;
+                                // for(int l=0;l<PAGE_SIZE;l++)
+                                //    pool->pages[j].data[l]=0;
                                 pool->addrs[j]=-1;
                                 pool->cnt[j]=1;
                                 pool->ref[j]=0;

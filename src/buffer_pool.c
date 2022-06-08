@@ -12,8 +12,8 @@ void init_buffer_pool(const char *filename, BufferPool *pool){
     if(result==FILE_IO_SUCCESS){
     for (int i = 0; i < CACHE_PAGE; i++)
     {
-        for (int j = 0; j < PAGE_SIZE; j++)
-            pool->pages[i].data[j] = 0;
+        // for (int j = 0; j < PAGE_SIZE; j++)
+        //     pool->pages[i].data[j] = 0;
 
         pool->addrs[i] = (off_t)-1;
 
@@ -102,8 +102,8 @@ Page *get_page(BufferPool *pool, off_t addr){
     if(pool->file.length==addr){
         //add page to  file
         //init page with 0
-        for (int j = 0; j < PAGE_SIZE; j++)
-            pool->pages[k].data[j] = 0;
+        // for (int j = 0; j < PAGE_SIZE; j++)
+        //     pool->pages[k].data[j] = 0;
         pool->addrs[k]=addr;
 
        write_page(&(pool->pages[k]),&(pool->file),addr);
