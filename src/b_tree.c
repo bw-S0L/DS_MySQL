@@ -30,7 +30,7 @@ void b_tree_close(BufferPool *pool) {
 
 RID b_tree_search(BufferPool *pool, void *key, size_t size, b_tree_ptr_row_cmp_t cmp) {
     // RID tm;
-    // get_rid_block_addr(tm)=17208;
+    // get_rid_block_addr(tm)=21672;
     // if(cmp(key,size,tm)==0){
     //      printf("\n\n");
     //     BNode*node=(BNode*)get_page(pool,1920);
@@ -50,70 +50,6 @@ RID b_tree_search(BufferPool *pool, void *key, size_t size, b_tree_ptr_row_cmp_t
     //     }
     //     release(pool,1920);
 
-    //      node=(BNode*)get_page(pool,2048);
-    //      if(node!=NULL){
-    //    printf("2048\n");
-    //     for(int i=0;i<node->n;i++)
-    //     printf("  %lld  ",get_rid_block_addr(node->row_ptr[i]));
-    //       if(!node->leaf){
-    //         printf("child");
-    //         for(int i=0;i<=node->n;i++)
-    //     printf("  %lld  ",node->child[i]);
-    //      printf("\n");
-    //     }
-    //     printf("pa=%lld\n",node->parent);
-    //      printf("\n");
-    //      }
-    // release(pool,2048);
-    
-    //     node=(BNode*)get_page(pool,1280);
-    //      if(node!=NULL){
-    //    printf("1280\n");
-    //     for(int i=0;i<node->n;i++)
-    //     printf("  %lld  ",get_rid_block_addr(node->row_ptr[i]));
-    //       if(!node->leaf){
-    //         printf("child");
-    //         for(int i=0;i<=node->n;i++)
-    //     printf("  %lld  ",node->child[i]);
-    //      printf("\n");
-    //     }
-    //     printf("pa=%lld\n",node->parent);
-    //      printf("\n");
-    //      }
-    //      release(pool,1280);
-       
-
-    //     node=(BNode*)get_page(pool,384);
-    //      if(node!=NULL){
-    //    printf("384\n");
-    //     for(int i=0;i<node->n;i++)
-    //     printf("  %lld  ",get_rid_block_addr(node->row_ptr[i]));
-    //       if(!node->leaf){
-    //         printf("child");
-    //         for(int i=0;i<=node->n;i++)
-    //     printf("  %lld  ",node->child[i]);
-    //      printf("\n");
-    //     }
-    //     printf("pa=%lld\n",node->parent);
-    //      printf("\n");
-    //      }
-    //      release(pool,384);
-
-    //       node=(BNode*)get_page(pool,1152);
-    //      if(node!=NULL){
-    //    printf("1152\n");
-    //     for(int i=0;i<node->n;i++)
-    //     printf("  %lld  ",get_rid_block_addr(node->row_ptr[i]));
-    //       if(!node->leaf){
-    //         printf("child");
-    //         for(int i=0;i<=node->n;i++)
-    //     printf("  %lld  ",node->child[i]);
-    //      printf("\n");
-    //     }
-    //     printf("pa=%lld\n",node->parent);
-    //      printf("\n");
-    //      }
-    //      release(pool,1152);
     //     system("pause");
     // }
     // don't del ctr , this addr=0
@@ -123,7 +59,10 @@ RID b_tree_search(BufferPool *pool, void *key, size_t size, b_tree_ptr_row_cmp_t
     pre=now=ctr->root_node;
     release(pool,0);
     BNode*node=(BNode*)get_page(pool,now);
-
+    
+        // if(cmp(key,size,tm)==0){
+        //  printf("\nwzh  root=%lld\n",now);
+        // }
     //INIT root should individually consider
     if(node->n==0){
           get_rid_block_addr(ans)=-1;
@@ -179,6 +118,7 @@ RID b_tree_search(BufferPool *pool, void *key, size_t size, b_tree_ptr_row_cmp_t
 }
 
 RID b_tree_insert(BufferPool *pool, RID rid, b_tree_row_row_cmp_t cmp, b_tree_insert_nonleaf_handler_t insert_handler) {
+     
     //this value will not be used
     RID nothing;
      get_rid_block_addr(nothing)=-1;
@@ -190,12 +130,11 @@ RID b_tree_insert(BufferPool *pool, RID rid, b_tree_row_row_cmp_t cmp, b_tree_in
     BCtrlBlock*ctr=(BCtrlBlock*)get_page(pool,0);
     pre=now=ctr->root_node;
     release(pool,0);
-
     BNode*node=(BNode*)get_page(pool,now);
     
     while(1){
         int i=lower_bound_rr(node->row_ptr,node->row_ptr+node->n,rid,cmp)-node->row_ptr;
-       // printf("i=%d addr=%lld\n",i,now);
+       // printf("insert i=%d addr=%lld\n",i,now);
          if(i!=node->n&&cmp(rid,node->row_ptr[i])==0){
              //non leaf
             if(!node->leaf){
@@ -228,6 +167,7 @@ RID b_tree_insert(BufferPool *pool, RID rid, b_tree_row_row_cmp_t cmp, b_tree_in
                 tag_split=1;
                 //   printf("i=%d\n",i);
                 // system("pause");
+                
                 if(i<DEGREE){
                     for(int j=DEGREE-1;j<2*DEGREE-1;j++){
                         y->row_ptr[j-DEGREE+1]=node->row_ptr[j];
@@ -250,7 +190,7 @@ RID b_tree_insert(BufferPool *pool, RID rid, b_tree_row_row_cmp_t cmp, b_tree_in
               
                     }
                 }
-               
+            
                 //
                 // non leaf   begin
                 
@@ -267,9 +207,9 @@ RID b_tree_insert(BufferPool *pool, RID rid, b_tree_row_row_cmp_t cmp, b_tree_in
                      
                      i=lower_bound_rr(p->row_ptr,p->row_ptr+p->n,rid,cmp)-p->row_ptr;
                      if(p->n==2*DEGREE-1){
-                       //   printf(" split contine \n");
+                    //     printf(" split contine \n");
                        
-                       //   printf("i=%d\n",i);
+                    //     printf("i=%d\n",i);
                      //  system("pause");
                          tag_split=1;
 
@@ -432,7 +372,347 @@ RID b_tree_insert(BufferPool *pool, RID rid, b_tree_row_row_cmp_t cmp, b_tree_in
 }
 
 void b_tree_delete(BufferPool *pool, RID rid, b_tree_row_row_cmp_t cmp, b_tree_insert_nonleaf_handler_t insert_handler, b_tree_delete_nonleaf_handler_t delete_handler) {
+    
 
+    int tag_merge=0;
+
+    off_t pre,now;
+    BCtrlBlock*ctr=(BCtrlBlock*)get_page(pool,0);
+    pre=now=ctr->root_node;
+    release(pool,0);
+   
+    BNode*node=(BNode*)get_page(pool,now);
+     // printf("\nwzh  root=%lld  size=%lld\n\n",now,node->n);
+      while(1){
+        int i=lower_bound_rr(node->row_ptr,node->row_ptr+node->n,rid,cmp)-node->row_ptr;
+         //   printf("finding i=%d  addr=%lld\n",i,now);
+         //hit
+         if(i!=node->n&&cmp(rid,node->row_ptr[i])==0){
+             //leaf find
+           if(node->leaf){
+
+
+                  for(int j=i;j<node->n-1;j++)
+                      node->row_ptr[j]=node->row_ptr[j+1];
+                  node->n--;
+                 //root is leaf    root should not be deleted
+                 if(node->parent<0){   //-1
+                     release(pool,pre);
+                     return ;
+                 }
+
+                 //deal leaf
+                if(node->n<DEGREE-1){   //before ==
+                
+                   //redistribute
+                    off_t sib_addr,p_addr,son_addr;
+                    BNode*sib,*p,*son;
+                    int index;
+
+                    p_addr=node->parent;
+                    p=(BNode*)get_page(pool,p_addr);
+
+                    for(int j=0;j<=p->n;j++){
+                        if(p->child[j]==now){
+                            index=j;
+                            break;
+                        }
+                    }
+
+                    if(index>0){
+                        sib_addr=p->child[index-1];
+                        sib=(BNode*)get_page(pool,sib_addr);
+                        if(sib->n>DEGREE-1){
+                           for(int j=node->n;j>0;j--){
+                               node->row_ptr[j]=node->row_ptr[j-1];
+                           }
+                           node->row_ptr[0]=sib->row_ptr[sib->n-1];
+                           node->n++;
+                          //  printf("\n ti1=%lld\n",get_rid_block_addr(node->row_ptr[0]));
+                           sib->n--;
+                           p->row_ptr[index-1]=node->row_ptr[0];
+                            release(pool,now);
+                            release(pool,sib_addr);
+                            release(pool,p_addr);
+                          //   printf("1\n");
+                           return ;
+                        }
+                        else{
+                            release(pool,sib_addr);
+                        }
+                    }
+
+                    if(index<p->n){
+                        sib_addr=p->child[index+1];
+                        sib=(BNode*)get_page(pool,sib_addr);
+                        if(sib->n>DEGREE-1){
+                             node->row_ptr[node->n]=sib->row_ptr[0];
+                             node->n++;
+                            for(int j=0;j<sib->n-1;j++){
+                               sib->row_ptr[j]=sib->row_ptr[j+1];
+                           }
+                           sib->n--;
+                         //  printf("\n ti2=%lld\n",get_rid_block_addr(sib->row_ptr[0]));
+                            p->row_ptr[index]=sib->row_ptr[0];
+                            release(pool,now);
+                            release(pool,sib_addr);
+                            release(pool,p_addr);
+                            //  printf("2\n");
+                            //  printf("now=%lld  sib=%lld   p=%lld\n",now,sib_addr,p_addr);
+                           return ;
+                        }
+
+                    }
+                    
+                    release(pool,sib_addr);
+                   
+                   //merge
+                   tag_merge=1;
+                
+                //   printf(" merge leaf \n");
+                 //   printf("i=%d\n",i);
+                   if(index>0){
+                        sib_addr=p->child[index-1];
+                        sib=(BNode*)get_page(pool,sib_addr);
+                        for(int j=0;j<node->n;j++){
+                            sib->row_ptr[sib->n+j]=node->row_ptr[j];
+                        }
+                        
+                        sib->n+=node->n;
+                        node->n=0;
+                        release_new_BNode(pool,now);
+                        release(pool,sib_addr);
+                        rid=p->row_ptr[index-1];
+                   }
+                   else{
+                        sib_addr=p->child[index+1];
+                        sib=(BNode*)get_page(pool,sib_addr);
+                        for(int j=0;j<sib->n;j++){
+                            node->row_ptr[node->n+j]=sib->row_ptr[j];
+                        }
+                        node->n+=sib->n;
+                        sib->n=0;
+                        release_new_BNode(pool,sib_addr);
+                        release(pool,now);
+                        rid=p->row_ptr[index];
+                   }
+                 
+                    now=p_addr;
+                    node=p;
+                    //
+
+
+                   // non leaf begin
+                   while(tag_merge){
+                       i=lower_bound_rr(node->row_ptr,node->row_ptr+node->n,rid,cmp)-node->row_ptr;
+                        
+                      //  printf(" non leaf \n");
+                      //   printf("i=%d\n",i);
+                        for(int j=i;j<node->n-1;j++){
+                            node->row_ptr[j]=node->row_ptr[j+1];
+                            node->child[j+1]=node->child[j+2];
+                        }
+
+                        node->n--;
+                       if(node->parent>=0){
+                            if(node->n<DEGREE-1){
+                                //redistribute
+                                p_addr=node->parent;
+                                p=(BNode*)get_page(pool,p_addr);
+
+                                for(int j=0;j<=p->n;j++){
+                                    if(p->child[j]==now){
+                                        index=j;
+                                        break;
+                                    }
+                                }
+
+                                if(index>0){
+                                    sib_addr=p->child[index-1];
+                                    sib=(BNode*)get_page(pool,sib_addr);
+                                    if(sib->n>DEGREE-1){
+                                    for(int j=node->n;j>0;j--){
+                                        node->row_ptr[j]=node->row_ptr[j-1];
+                                    }
+                                    node->row_ptr[0]=p->row_ptr[index-1];
+
+                                    for(int j=node->n+1;j>0;j--){
+                                        node->child[j]=node->child[j-1];
+                                    }
+                                    node->child[0]=sib->child[sib->n];
+
+                                    p->row_ptr[index-1]=sib->row_ptr[sib->n-1];
+                                   // printf("\n tidai1=%lld\n",get_rid_block_addr(p->row_ptr[index-1]));
+                                    node->n++;
+                                    sib->n--;
+                                    
+                                     son_addr=node->child[0];
+                                     son=(BNode*)get_page(pool,son_addr);
+                                     son->parent=now;
+
+                                     release(pool,son_addr);
+                                        release(pool,now);
+                                        release(pool,sib_addr);
+                                        release(pool,p_addr);
+                                    return ;
+                                    }
+                                      else{
+                                      release(pool,sib_addr);
+                                     }
+                                }
+
+                                if(index<p->n){
+                                    sib_addr=p->child[index+1];
+                                    sib=(BNode*)get_page(pool,sib_addr);
+                                    if(sib->n>DEGREE-1){
+                                        node->row_ptr[node->n]=p->row_ptr[index];
+                                        node->child[node->n+1]=sib->child[0];
+                                        p->row_ptr[index]=sib->row_ptr[0];
+
+                                        for(int j=0;j<sib->n-1;j++){
+                                        sib->row_ptr[j]=sib->row_ptr[j+1];
+                                        }
+                                        for(int j=0;j<sib->n;j++){
+                                            sib->child[j]=sib->child[j+1];
+                                        }
+                                  //  printf("\n tidai2=%lld\n",get_rid_block_addr( p->row_ptr[index]));
+                                    node->n++;
+                                    sib->n--;
+
+                                      son_addr=node->child[node->n];
+                                     son=(BNode*)get_page(pool,son_addr);
+                                     son->parent=now;
+
+                                         release(pool,son_addr);
+                                        release(pool,now);
+                                        release(pool,sib_addr);
+                                        release(pool,p_addr);
+                                    return ;
+                                    }
+                                }
+                                
+                                release(pool,sib_addr);
+                              
+                                //merge
+                                tag_merge=1;
+
+                                 if(index>0){
+                                    sib_addr=p->child[index-1];
+                                    sib=(BNode*)get_page(pool,sib_addr);
+
+                                    sib->row_ptr[sib->n]=p->row_ptr[index-1];
+                                    for(int j=0;j<node->n;j++){
+                                        sib->row_ptr[sib->n+j+1]=node->row_ptr[j];
+                                    }
+                                    
+                                   
+                                    for(int j=0;j<node->n+1;j++){
+                                        sib->child[sib->n+1+j]=node->child[j];
+                                    }
+                                    
+                                    for(int j=0;j<=node->n;j++){
+                                        son_addr=node->child[j];
+                                        son=(BNode*)get_page(pool,son_addr);
+                                        son->parent=sib_addr;
+                                         release(pool,son_addr);
+                                    }
+
+                                    sib->n+=node->n+1;
+                                    node->n=0;
+                                    release_new_BNode(pool,now);
+                                    release(pool,sib_addr);
+                                    rid=p->row_ptr[index-1];
+                                }
+                                else{
+                                    sib_addr=p->child[index+1];
+                                    sib=(BNode*)get_page(pool,sib_addr);
+
+                                    node->row_ptr[node->n]=p->row_ptr[index];
+                                    for(int j=0;j<sib->n;j++){
+                                        node->row_ptr[node->n+j+1]=sib->row_ptr[j];
+                                    }
+
+                                    for(int j=0;j<sib->n+1;j++){
+                                        node->child[node->n+1+j]=sib->child[j];
+                                    }
+                                    for(int j=0;j<=sib->n;j++){
+                                        son_addr=sib->child[j];
+                                        son=(BNode*)get_page(pool,son_addr);
+                                        son->parent=now;
+                                         release(pool,son_addr);
+                                    }
+
+                                    node->n+=sib->n+1;
+                                    sib->n=0;
+                                    release_new_BNode(pool,sib_addr);
+                                    release(pool,now);
+                                    rid=p->row_ptr[index];
+                                }
+
+                                 now=p_addr;
+                                 node=p;
+
+                            }
+                            else{
+                                tag_merge=0;
+                                
+                                 release(pool,now);
+                            }
+                       }
+                       else{
+                           tag_merge=0;
+                           if(node->n==0){  //change the root
+                             ctr=(BCtrlBlock*)get_page(pool,0);
+                             ctr->root_node=node->child[0];
+                             pre=node->child[0];
+                             release(pool,0);
+                             release_new_BNode(pool,now);
+                          
+                             node=(BNode*)get_page(pool,pre);
+                            node->parent=-1;
+                            release(pool,pre);
+                           }
+                           else{
+                           release(pool,now);
+                           }
+                       }
+                   }
+                   
+                   //end
+
+                }
+                else{
+                
+                release(pool,pre);
+                }
+
+                return ;
+            }
+
+            //non leaf
+            else{
+            now=node->child[i+1];
+            release(pool,pre);
+            node=(BNode*)get_page(pool,now);
+            pre=now;
+            continue;
+            }
+        } 
+        //not exist
+        if(node->leaf){
+      
+            printf("\nb_tree_delete: value don't exist\n");
+           system("pause");
+         return;
+        }
+        //continuing
+        now=node->child[i];
+        release(pool,pre);
+        node=(BNode*)get_page(pool,now);
+        pre=now;
+
+
+      }
 
 }
 
@@ -489,7 +769,7 @@ off_t get_new_BNode(BufferPool*pool){
       return ans;
 }
 void  release_new_BNode(BufferPool*pool,off_t addr){
-
+     release(pool,addr);
     if(addr==pool->file.length-PAGE_SIZE){
         for(int j=0;j<CACHE_PAGE;j++){
             if(pool->addrs[j]==addr){

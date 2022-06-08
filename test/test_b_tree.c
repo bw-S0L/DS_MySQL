@@ -17,7 +17,7 @@ short get_idx(my_off_t addr);
 int contain(my_off_t addr);
 size_t get_total();
 my_off_t get_addr(int idx);
-
+int valid_pool=8;
 RID get_rand_rid() {
     RID rid;
     get_rid_block_addr(rid) = rand();
@@ -52,6 +52,9 @@ void delete_handler(RID rid) {
 
 int test(int num_op, int out)
 {
+    //
+     int sum=0;
+    //
     int flag = 0;
     int i, op;
     RID rid, rid1, rid2;
@@ -62,10 +65,13 @@ int test(int num_op, int out)
 
     for (i = 0; i < num_op; ++i) {
         op = rand() % 3;
+      
         if (op == 0) {  /* insert */
+            sum++;
             do {
                 rid = get_rand_rid();
             } while (contain(get_rid_block_addr(rid)));
+
             if (out) {
                 printf("insert: ");
                 print_rid(rid);
@@ -75,24 +81,40 @@ int test(int num_op, int out)
             b_tree_insert(&pool, rid, &rid_row_row_cmp, &insert_handler);
             insert(get_rid_block_addr(rid), get_rid_idx(rid));
            
+          
            
             if (out) {
                 printf("insert end \n");
-              
+          
             }
+        //       if(num_valid_pool(&pool)<valid_pool){
+        //       printf("num_valid_pool 1=%d  cmp=%d\n",num_valid_pool(&pool),valid_pool);
+        //       valid_pool=num_valid_pool(&pool);
+        //        system("pause");
+        //   }
         } 
-        // else if (op == 1 && get_total() != 0) {  /* erase */
-        //     get_rid_block_addr(rid) = get_addr(rand() % (int)get_total());
-        //     get_rid_idx(rid) = 0;
-        //     if (out) {
-        //         printf("erase: ");
-        //         print_rid(rid);
-        //         printf("\n");
-        //     }
-        //     b_tree_delete(&pool, rid, &rid_row_row_cmp, &insert_handler, &delete_handler);
-        //     erase(get_rid_block_addr(rid));
-        // } 
+        else if (op == 1 && get_total() != 0) {  /* erase */
+            sum--;
+            get_rid_block_addr(rid) = get_addr(rand() % (int)get_total());
+            get_rid_idx(rid) = 0;
+            if (out) {
+                printf("erase: ");
+                print_rid(rid);
+                printf("\n");
+            }
+            b_tree_delete(&pool, rid, &rid_row_row_cmp, &insert_handler, &delete_handler);
+            erase(get_rid_block_addr(rid));
+             if (out) {
+                printf("erase end \n");
+            }
+        //     if(num_valid_pool(&pool)<valid_pool){
+        //       printf("num_valid_pool 2=%d  cmp=%d\n",num_valid_pool(&pool),valid_pool);
+        //       valid_pool=num_valid_pool(&pool);
+        //        system("pause");
+        //   }
+        } 
         else {  /* find */
+          //  printf("\nsum=%d\n",sum);
             if (rand() % 2 && get_total() != 0) {
                 get_rid_block_addr(rid) = get_addr(rand() % (int)get_total());
             } else {
@@ -134,7 +156,15 @@ int test(int num_op, int out)
                 flag = 1;
                 break;  /* for */
             }
+        //      if(num_valid_pool(&pool)<valid_pool){
+        //       printf("num_valid_pool 1=%d  cmp=%d\n",num_valid_pool(&pool),valid_pool);
+        //       valid_pool=num_valid_pool(&pool);
+        //        system("pause");
+        //   }
         }
+       
+      
+        
     }
 
     /* b_tree_traverse(&pool); */
@@ -145,7 +175,7 @@ int test(int num_op, int out)
     if (remove("zztest-b-tree")) {
         printf("error deleting: zztest-b-tree\n");
     }
-  // system("pause");
+ //  system("pause");
     return flag;
 }
 
@@ -167,7 +197,7 @@ int main()
     srand(0);
     // srand((unsigned int)time(NULL));
 
-    if (test(10000, 0)) {
+    if (test(2000000, 0)) {
         return 1;
     }
     // if (test(2000000, 0)) {

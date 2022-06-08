@@ -45,7 +45,7 @@ Page *get_page(BufferPool *pool, off_t addr){
      
      if(pool->file.length<addr){
          printf("get page: pool->file.length= %lld<addr= %lld \n",pool->file.length,addr);
-         system("pause");
+        // system("pause");
          return NULL;
      }
      int k=-1;
@@ -134,7 +134,7 @@ void release(BufferPool *pool, off_t addr){
     }
     else{
        
-        printf("addr is not in buffer_pool\n");
+        printf("addr is not in buffer_pool  add=%lld\n",addr);
     }
 }
 
@@ -143,6 +143,9 @@ int num_valid_pool(BufferPool *pool){
     for(int i=0;i<CACHE_PAGE;i++){
         if(pool->ref[i]==0)
         sum++;
+        else{
+            printf("pool=%lld\n",pool->addrs[i]);
+        }
     }
     return sum;
 }
