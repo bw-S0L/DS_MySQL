@@ -5,7 +5,7 @@
 #include "table.h"
 
 /* it MUST be satisfied that: DEGREE >= 2 */
-#define DEGREE (((PAGE_SIZE) - sizeof(size_t) - sizeof(off_t) - sizeof(char) + sizeof(RID)) / 2 / (sizeof(off_t) + sizeof(RID)))   //3
+#define DEGREE (((PAGE_SIZE) - sizeof(size_t) - 2*sizeof(off_t) - sizeof(char) + sizeof(RID)) / 2 / (sizeof(off_t) + sizeof(RID)))   //3
 
 typedef struct {
   /* B-Tree Node */
@@ -23,6 +23,8 @@ typedef struct {
   /* you can modify anything in this struct */
   off_t root_node;
   off_t free_node_head;
+  off_t free_node_tail;
+  off_t free_node_num;
 } BCtrlBlock;
 
 /* BEGIN: --------------------------------- DO NOT MODIFY! --------------------------------- */
@@ -78,4 +80,9 @@ void b_tree_delete(BufferPool *pool, RID rid, b_tree_row_row_cmp_t cmp, b_tree_i
 
 /* END:   --------------------------------- DO NOT MODIFY! --------------------------------- */
 
+
+RID* lower_bound_pr(RID* first, RID* last,void*ptr,size_t size,b_tree_ptr_row_cmp_t cmp);
+RID* lower_bound_rr(RID* first, RID* last,RID rid,b_tree_row_row_cmp_t cmp);
+off_t get_new_BNode(BufferPool*pool);
+void  release_new_BNode(BufferPool*pool,off_t addr);
 #endif  /* _B_TREE_H */

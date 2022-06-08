@@ -27,6 +27,11 @@
         "streambuf": "c",
         "string": "c",
         "xiosbase": "c",
-        "xlocinfo": "c"
+        "xlocinfo": "c",
+        "stdio.h": "c",
+        "map": "cpp",
+        "set": "cpp",
+        "xtree": "cpp",
+        "algorithm": "c"
     }
 }

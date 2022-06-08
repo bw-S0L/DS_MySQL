@@ -71,19 +71,28 @@ int test(int num_op, int out)
                 print_rid(rid);
                 printf("\n");
             }
+            
             b_tree_insert(&pool, rid, &rid_row_row_cmp, &insert_handler);
             insert(get_rid_block_addr(rid), get_rid_idx(rid));
-        } else if (op == 1 && get_total() != 0) {  /* erase */
-            get_rid_block_addr(rid) = get_addr(rand() % (int)get_total());
-            get_rid_idx(rid) = 0;
+           
+           
             if (out) {
-                printf("erase: ");
-                print_rid(rid);
-                printf("\n");
+                printf("insert end \n");
+              
             }
-            b_tree_delete(&pool, rid, &rid_row_row_cmp, &insert_handler, &delete_handler);
-            erase(get_rid_block_addr(rid));
-        } else {  /* find */
+        } 
+        // else if (op == 1 && get_total() != 0) {  /* erase */
+        //     get_rid_block_addr(rid) = get_addr(rand() % (int)get_total());
+        //     get_rid_idx(rid) = 0;
+        //     if (out) {
+        //         printf("erase: ");
+        //         print_rid(rid);
+        //         printf("\n");
+        //     }
+        //     b_tree_delete(&pool, rid, &rid_row_row_cmp, &insert_handler, &delete_handler);
+        //     erase(get_rid_block_addr(rid));
+        // } 
+        else {  /* find */
             if (rand() % 2 && get_total() != 0) {
                 get_rid_block_addr(rid) = get_addr(rand() % (int)get_total());
             } else {
@@ -136,6 +145,7 @@ int test(int num_op, int out)
     if (remove("zztest-b-tree")) {
         printf("error deleting: zztest-b-tree\n");
     }
+  // system("pause");
     return flag;
 }
 
@@ -157,12 +167,12 @@ int main()
     srand(0);
     // srand((unsigned int)time(NULL));
 
-    // if (test(50, 1)) {
-    //     return 1;
-    // }
-    if (test(2000000, 0)) {
+    if (test(10000, 0)) {
         return 1;
     }
+    // if (test(2000000, 0)) {
+    //     return 1;
+    // }
 
     /* prevent using exit(0) to pass the test */
     printf("END OF TEST\n");
