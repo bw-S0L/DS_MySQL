@@ -32,6 +32,7 @@
         "map": "cpp",
         "set": "cpp",
         "xtree": "cpp",
-        "algorithm": "c"
+        "algorithm": "c",
+        "xtr1common": "c"
     }
 }

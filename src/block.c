@@ -11,11 +11,13 @@ void init_block(Block *block) {
 ItemPtr get_item(Block *block, short idx) {
     if (idx < 0 || idx >= block->n_items) {
         printf("get item error: idx is out of range idx=%d\n",idx);
+        system("pause");
         return NULL;
     }
     ItemID item_id = get_item_id(block, idx);
     if (get_item_id_availability(item_id)) {
-        printf("get item error: item_id is not used\n");
+        printf("get item error: item_id is not used  idx=%d\n",idx);
+        system("pause");
         return NULL;
     }
     short offset = get_item_id_offset(item_id);

@@ -46,24 +46,25 @@ char next_char(Table *table, StringRecord *record) {
 
 }
 
-off_t get_string_size(Table *table, StringRecord *record){
-      StringRecord *tmp=record;
+off_t get_string_size(Table *table, StringRecord *record,RID root){
+      
       off_t ans=0;
       RID rid;
       off_t addr;
 
       while(1){
-          ans+=get_str_chunk_size(&(tmp->chunk));
+          ans+=get_str_chunk_size(&(record->chunk));
 
-          rid=get_str_chunk_rid(&(tmp->chunk));
+          rid=get_str_chunk_rid(&(record->chunk));
           addr=get_rid_block_addr(rid);
           if(addr<0){ //==-1
              break;
           }
           else{
-              read_string(table,get_str_chunk_rid(&(tmp->chunk)),tmp);
+              read_string(table,get_str_chunk_rid(&(record->chunk)),record);
           }
       }
+      read_string(table,root,record);
       return ans;
 
 }
