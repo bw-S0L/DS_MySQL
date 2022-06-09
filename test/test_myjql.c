@@ -143,7 +143,7 @@ int main()
     // if (test(10, 30, 1)) {
     //     return 1;
     // }
-    if (test(64, 10000, 0)) {
+    if (test(64, 50000, 0)) {
         system("pause");
         return 1;
     }
