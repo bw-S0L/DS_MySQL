@@ -57,7 +57,7 @@ off_t get_string_size(Table *table, StringRecord *record){
 
           rid=get_str_chunk_rid(&(tmp->chunk));
           addr=get_rid_block_addr(rid);
-          if(addr==-1){
+          if(addr<0){ //==-1
              break;
           }
           else{
@@ -68,10 +68,13 @@ off_t get_string_size(Table *table, StringRecord *record){
 
 }
 int compare_string_record(Table *table, const StringRecord *a, const StringRecord *b) {
+     char x,y;
     while(has_next_char(a)&&has_next_char(b)){
-        if(next_char(table,a)>next_char(table,b))
+        x=next_char(table,a);
+        y=next_char(table,b);
+        if(x>y)
           return 1;
-        else if(next_char(table,a)<next_char(table,b))
+        else if(x<y)
           return -1;
         else
           continue;

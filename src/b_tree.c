@@ -134,8 +134,9 @@ RID b_tree_insert(BufferPool *pool, RID rid, b_tree_row_row_cmp_t cmp, b_tree_in
     BNode*node=(BNode*)get_page(pool,now);
     
     while(1){
+        printf("insert r\n");
         int i=lower_bound_rr(node->row_ptr,node->row_ptr+node->n,rid,cmp)-node->row_ptr;
-       // printf("insert i=%d addr=%lld\n",i,now);
+        printf("insert i=%d addr=%lld  node->n= %lld\n",i,now,node->n);
          if(i!=node->n&&cmp(rid,node->row_ptr[i])==0){
              //non leaf
             if(!node->leaf){
@@ -406,8 +407,9 @@ void b_tree_delete(BufferPool *pool, RID rid, b_tree_row_row_cmp_t cmp, b_tree_i
     BNode*node=(BNode*)get_page(pool,now);
      // printf("\nwzh  root=%lld  size=%lld\n\n",now,node->n);
       while(1){
+           printf("b_tree del\n");
         int i=lower_bound_rr(node->row_ptr,node->row_ptr+node->n,rid,cmp)-node->row_ptr;
-         //   printf("finding i=%d  addr=%lld\n",i,now);
+            printf("finding i=%d  addr=%lld  node->n= %lld\n",i,now,node->n);
          //hit
          if(i!=node->n&&cmp(rid,node->row_ptr[i])==0){
              //leaf find
@@ -746,9 +748,10 @@ void b_tree_delete(BufferPool *pool, RID rid, b_tree_row_row_cmp_t cmp, b_tree_i
 /*************************************************/
 
 RID* lower_bound_pr(RID* first, RID* last,void*ptr,size_t size,b_tree_ptr_row_cmp_t cmp){
-    int l = 0, r = last - first, ans = r,mid;
+    int l = 0, r = last - first-1, ans = r+1,mid;
     while (l <= r) {
         mid = (l + r) / 2;
+        printf("mid=%lld  size=%lld\n",mid,last-first);
         if ( cmp(ptr,size,*(first+mid))>0) {
             l = mid + 1;
         }
@@ -760,9 +763,11 @@ RID* lower_bound_pr(RID* first, RID* last,void*ptr,size_t size,b_tree_ptr_row_cm
     return first + ans;
 }
 RID* lower_bound_rr(RID* first, RID* last,RID rid,b_tree_row_row_cmp_t cmp){
-     int l = 0, r = last - first, ans = r,mid;
+     int l = 0, r = last - first-1, ans = r+1,mid;
+   
     while (l <= r) {
         mid = (l + r) / 2;
+         printf("mid=%lld  size=%lld\n",mid,last-first);
         if ( cmp(rid,*(first+mid))>0) {
             l = mid + 1;
         }

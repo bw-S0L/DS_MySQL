@@ -48,12 +48,13 @@ void myjql_close() {
 int rid_row_row_cmp(RID a, RID b) {
     Record re_a,re_b;
     StringRecord sre_a,sre_b;
+   // printf("record\n");
     read_record(&tbl_rec,a,&re_a);
     read_record(&tbl_rec,b,&re_b);
-
+  // printf("string\n");
     read_string(&tbl_str,re_a.key,&sre_a);
    read_string(&tbl_str,re_b.key,&sre_b);
-
+  //  printf("end\n");
    return compare_string_record(&tbl_str,&sre_a,&sre_b);
 }
 
@@ -137,23 +138,36 @@ void myjql_set(const char *key, size_t key_len, const char *value, size_t value_
       RID rid1,rid_key,rid_value;
     Record re;
     rid1=b_tree_search(&bp_idx,key,key_len,&rid_ptr_row_cmp);
+  //  printf("b_search is ok\n");
     if(get_rid_block_addr(rid1)<0){ //==-1
       //don't exist
       rid_key=write_string(&tbl_str,key,key_len);
+    
        rid_value=write_string(&tbl_str,value,value_len);
+    
        re.key=rid_key;
        re.value=rid_value;
        rid1=write_record(&tbl_rec,&re);
+   
        b_tree_insert(&bp_idx,rid1,&rid_row_row_cmp,&insert_handler);
+    
     }
     else{
+        b_tree_delete(&bp_idx,rid1,&rid_row_row_cmp,&insert_handler,&delete_handler);
+   
         read_record(&tbl_rec,rid1,&re);
+   
         delete_string(&tbl_str,re.value);
+   
         rid_value=write_string(&tbl_str,value,value_len);
+    
          delete_record(&tbl_rec,rid1);
+    
          re.value=rid_value;
          rid1=write_record(&tbl_rec,&re);
+      
          b_tree_insert(&bp_idx,rid1,&rid_row_row_cmp,&insert_handler);
+      
     }
 }
 
