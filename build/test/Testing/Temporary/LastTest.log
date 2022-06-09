@@ -1,10 +1,10 @@
-Start testing: Jun 09 01:18 ?D1迆㊣那℅?那㊣??
+Start testing: Jun 09 10:41 ?D1迆㊣那℅?那㊣??
 ----------------------------------------------------------
 1/1 Testing: test_b_tree
 1/1 Test: test_b_tree
 Command: "C:/Users/86198/Desktop/DS/PJ/pj2/myjql/build/test/Debug/test_b_tree.exe"
 Directory: C:/Users/86198/Desktop/DS/PJ/pj2/myjql/build/test
-"test_b_tree" start time: Jun 09 01:18 ?D1迆㊣那℅?那㊣??
+"test_b_tree" start time: Jun 09 10:41 ?D1迆㊣那℅?那㊣??
 Output:
 ----------------------------------------------------------
 PAGE_SIZE = 128
@@ -13,11 +13,11 @@ BNode size: 128
 zztest-b-tree  file length = 0
 END OF TEST
 <end of output>
-Test time =  37.09 sec
+Test time =  36.74 sec
 ----------------------------------------------------------
 Test Passed.
-"test_b_tree" end time: Jun 09 01:18 ?D1迆㊣那℅?那㊣??
-"test_b_tree" time elapsed: 00:00:37
+"test_b_tree" end time: Jun 09 10:42 ?D1迆㊣那℅?那㊣??
+"test_b_tree" time elapsed: 00:00:36
 ----------------------------------------------------------
 
-End testing: Jun 09 01:18 ?D1迆㊣那℅?那㊣??
+End testing: Jun 09 10:42 ?D1迆㊣那℅?那㊣??

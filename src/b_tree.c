@@ -6,11 +6,11 @@
 void b_tree_init(const char *filename, BufferPool *pool) {
     init_buffer_pool(filename, pool);
     /* TODO: add code here */
-    pool->file.length=0;
+    if(pool->file.length==0){
     BCtrlBlock*ctr=(BCtrlBlock*)get_page(pool,0);
-    BNode*node=(BNode*)get_page(pool,128);
+    BNode*node=(BNode*)get_page(pool,PAGE_SIZE);
       //INIT root addr=128
-    ctr->root_node=128;
+    ctr->root_node=PAGE_SIZE;
     ctr->free_node_head=-1;
     ctr->free_node_tail=-1;
     ctr->free_node_num=0;
@@ -21,7 +21,8 @@ void b_tree_init(const char *filename, BufferPool *pool) {
     node->leaf=1;
   
     release(pool,0);
-    release(pool,128);
+    release(pool,PAGE_SIZE);
+    }
 }
 
 void b_tree_close(BufferPool *pool) {
@@ -124,7 +125,7 @@ RID b_tree_insert(BufferPool *pool, RID rid, b_tree_row_row_cmp_t cmp, b_tree_in
      get_rid_block_addr(nothing)=-1;
      get_rid_idx(nothing)=0;
     //
-    int tag_split=0;
+    int tag_split=0,handler=0;
     
      off_t pre,now;
     BCtrlBlock*ctr=(BCtrlBlock*)get_page(pool,0);
@@ -154,7 +155,8 @@ RID b_tree_insert(BufferPool *pool, RID rid, b_tree_row_row_cmp_t cmp, b_tree_in
                //  printf("leaf split \n");
                
                 //split the leaf
-               
+                 handler=1;
+
                 off_t y_addr=get_new_BNode(pool);
                 if(y_addr==-1)
                   y_addr=pool->file.length;
@@ -231,6 +233,11 @@ RID b_tree_insert(BufferPool *pool, RID rid, b_tree_row_row_cmp_t cmp, b_tree_in
                             for(int j=DEGREE-1;j>i;j--){
                             p->row_ptr[j]=p->row_ptr[j-1];
                             }
+                            if(handler){
+                             p->row_ptr[i]=insert_handler(rid);
+                             handler=0;
+                            }
+                            else
                             p->row_ptr[i]=rid;
                         
 
@@ -243,6 +250,11 @@ RID b_tree_insert(BufferPool *pool, RID rid, b_tree_row_row_cmp_t cmp, b_tree_in
                                 j++;
                                 }
                                 else{
+                                     if(handler){
+                                     tmp->row_ptr[count]=insert_handler(rid);
+                                     handler=0;
+                                     }
+                                  else
                                    tmp->row_ptr[count]=rid;
                                    tag=1;
                                 }
@@ -305,6 +317,11 @@ RID b_tree_insert(BufferPool *pool, RID rid, b_tree_row_row_cmp_t cmp, b_tree_in
                          tag_split=0;
                           for(int j=p->n;j>i;j--)
                             p->row_ptr[j]=p->row_ptr[j-1];
+                         if(handler){
+                             p->row_ptr[i]=insert_handler(rid);
+                             handler=0;
+                            }
+                        else
                          p->row_ptr[i]=rid;
 
                             for(int j=p->n+1;j>i+1;j--)
@@ -331,6 +348,11 @@ RID b_tree_insert(BufferPool *pool, RID rid, b_tree_row_row_cmp_t cmp, b_tree_in
                     p->parent=-1;
                     p->child[0]=now;
                     p->child[1]=y_addr;
+                     if(handler){
+                             p->row_ptr[0]=insert_handler(rid);
+                             handler=0;
+                     }
+                    else
                     p->row_ptr[0]=rid;
                     p->leaf=0;
 
@@ -430,7 +452,8 @@ void b_tree_delete(BufferPool *pool, RID rid, b_tree_row_row_cmp_t cmp, b_tree_i
                            node->n++;
                           //  printf("\n ti1=%lld\n",get_rid_block_addr(node->row_ptr[0]));
                            sib->n--;
-                           p->row_ptr[index-1]=node->row_ptr[0];
+                           delete_handler( p->row_ptr[index-1]);
+                           p->row_ptr[index-1]=insert_handler(node->row_ptr[0]);
                             release(pool,now);
                             release(pool,sib_addr);
                             release(pool,p_addr);
@@ -453,7 +476,8 @@ void b_tree_delete(BufferPool *pool, RID rid, b_tree_row_row_cmp_t cmp, b_tree_i
                            }
                            sib->n--;
                          //  printf("\n ti2=%lld\n",get_rid_block_addr(sib->row_ptr[0]));
-                            p->row_ptr[index]=sib->row_ptr[0];
+                         delete_handler(p->row_ptr[index]);
+                            p->row_ptr[index]=insert_handler(sib->row_ptr[0]);
                             release(pool,now);
                             release(pool,sib_addr);
                             release(pool,p_addr);
@@ -508,6 +532,7 @@ void b_tree_delete(BufferPool *pool, RID rid, b_tree_row_row_cmp_t cmp, b_tree_i
                         
                       //  printf(" non leaf \n");
                       //   printf("i=%d\n",i);
+                      delete_handler(node->row_ptr[i]);
                         for(int j=i;j<node->n-1;j++){
                             node->row_ptr[j]=node->row_ptr[j+1];
                             node->child[j+1]=node->child[j+2];
@@ -540,7 +565,7 @@ void b_tree_delete(BufferPool *pool, RID rid, b_tree_row_row_cmp_t cmp, b_tree_i
                                         node->child[j]=node->child[j-1];
                                     }
                                     node->child[0]=sib->child[sib->n];
-
+                                                        
                                     p->row_ptr[index-1]=sib->row_ptr[sib->n-1];
                                    // printf("\n tidai1=%lld\n",get_rid_block_addr(p->row_ptr[index-1]));
                                     node->n++;

@@ -197,12 +197,12 @@ int main()
     srand(0);
     // srand((unsigned int)time(NULL));
 
-    if (test(2000000, 0)) {
-        return 1;
-    }
     // if (test(2000000, 0)) {
     //     return 1;
     // }
+    if (test(2000000, 0)) {
+        return 1;
+    }
 
     /* prevent using exit(0) to pass the test */
     printf("END OF TEST\n");
