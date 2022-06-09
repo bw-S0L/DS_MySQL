@@ -1,4 +1,4 @@
-test_b_tree 14 2.62443
-test_hash_map 2 79.4555
-test_str 2 35.7548
+test_b_tree 15 2.41077
+test_hash_map 3 54.6597
+test_str 3 24.2313
 ---

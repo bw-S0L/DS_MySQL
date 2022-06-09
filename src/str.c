@@ -46,7 +46,44 @@ char next_char(Table *table, StringRecord *record) {
 
 }
 
+off_t get_string_size(Table *table, StringRecord *record){
+      StringRecord *tmp=record;
+      off_t ans=0;
+      RID rid;
+      off_t addr;
+
+      while(1){
+          ans+=get_str_chunk_size(&(tmp->chunk));
+
+          rid=get_str_chunk_rid(&(tmp->chunk));
+          addr=get_rid_block_addr(rid);
+          if(addr==-1){
+             break;
+          }
+          else{
+              read_string(table,get_str_chunk_rid(&(tmp->chunk)),tmp);
+          }
+      }
+      return ans;
+
+}
 int compare_string_record(Table *table, const StringRecord *a, const StringRecord *b) {
+    while(has_next_char(a)&&has_next_char(b)){
+        if(next_char(table,a)>next_char(table,b))
+          return 1;
+        else if(next_char(table,a)<next_char(table,b))
+          return -1;
+        else
+          continue;
+    }
+
+    if(has_next_char(a))
+    return 1;
+    
+    if(has_next_char(b))
+    return -1;
+
+    return 0;
 }
 
 RID write_string(Table *table, const char *data, off_t size) {
@@ -120,7 +157,7 @@ size_t load_string(Table *table, const StringRecord *record, char *dest, size_t 
     StringRecord *mp=record;
     size_t i=0;
     
-    while(has_next_char(mp)){
+    while(has_next_char(mp)&&i<max_size){
           *(dest+i)=next_char(table,mp);
           i++;
          // printf("i=%lld char=%c  idx=%d\n",i,*(dest+i-1),mp->idx);

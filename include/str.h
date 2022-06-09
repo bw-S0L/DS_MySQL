@@ -52,4 +52,5 @@ size_t load_string(Table *table, const StringRecord *record, char *dest, size_t 
 
 /* END:   --------------------------------- DO NOT MODIFY! --------------------------------- */
 
+off_t get_string_size(Table *table, StringRecord *record);
 #endif  /* _STR_H */
